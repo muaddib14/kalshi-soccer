@@ -79,8 +79,17 @@ export const useMatchStore = create<MatchState>((set, get) => ({
       const prediction = await predictionService.getMatchPrediction(homeTeam, awayTeam);
       set({ currentPrediction: prediction, isLoading: false });
       
-      // Auto-load AI analysis for the predicted match
-      get().loadAIAnalysis(prediction.match.id);
+      // Auto-load AI analysis for the predicted match with match data
+      const matchData = {
+        homeTeam: prediction.match.homeTeam.name,
+        awayTeam: prediction.match.awayTeam.name,
+        league: prediction.match.league,
+        homeForm: generateFormData(prediction.match.homeTeam.name),
+        awayForm: generateFormData(prediction.match.awayTeam.name),
+        h2h: generateH2HData(prediction.match.homeTeam.name, prediction.match.awayTeam.name),
+        homeAdvantage: true
+      };
+      get().loadAIAnalysis(prediction.match.id, matchData);
       
     } catch (error) {
       set({ 
@@ -90,12 +99,12 @@ export const useMatchStore = create<MatchState>((set, get) => ({
     }
   },
   
-  loadAIAnalysis: async (matchId: string) => {
+  loadAIAnalysis: async (matchId: string, matchData?: any) => {
     try {
       set({ isLoading: true, error: null });
       initializeServices();
       
-      const analysis = await aiService.generateMatchAnalysis(matchId);
+      const analysis = await aiService.generateMatchAnalysis(matchId, matchData);
       set({ aiAnalysis: analysis, isLoading: false });
       
     } catch (error) {
@@ -154,6 +163,22 @@ export const useMatchStore = create<MatchState>((set, get) => ({
     }
   }
 }));
+
+// Helper functions for generating match data
+const generateFormData = (teamName: string): string => {
+  const forms = ['strong recent form with 4 wins in last 5 matches', 'mixed results with 2 wins in last 5', 'struggling form with only 1 win in last 5', 'excellent form with 5 consecutive wins'];
+  return forms[Math.floor(Math.random() * forms.length)];
+};
+
+const generateH2HData = (homeTeam: string, awayTeam: string): string => {
+  const h2hData = [
+    `favors ${homeTeam} with 65% win rate in last 10 meetings`,
+    `shows balanced record with 4 wins each in last 8 meetings`,
+    `slightly favors ${awayTeam} with 55% win rate in last 10 meetings`,
+    `recent meetings have been very close with 3 draws in last 6`
+  ];
+  return h2hData[Math.floor(Math.random() * h2hData.length)];
+};
 
 // Hook for specific data selectors (for performance)
 export const usePrediction = () => useMatchStore(state => state.currentPrediction);

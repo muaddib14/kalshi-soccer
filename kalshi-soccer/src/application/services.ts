@@ -25,6 +25,25 @@ export interface IPredictionHistoryService {
   }>;
 }
 
+// Helper function to determine league based on team name
+const getTeamLeague = (teamName: string): string => {
+  const premierLeagueTeams = [
+    'Manchester City', 'Arsenal', 'Liverpool', 'Chelsea',
+    'Manchester United', 'Tottenham', 'Newcastle', 'Brighton',
+    'Aston Villa', 'West Ham', 'Fulham', 'Crystal Palace'
+  ];
+  
+  const laLigaTeams = [
+    'Real Madrid', 'Barcelona', 'Atletico Madrid', 'Sevilla',
+    'Real Betis', 'Real Sociedad', 'Villarreal', 'Valencia',
+    'Athletic Bilbao', 'Osasuna', 'Celta Vigo', 'Girona'
+  ];
+  
+  if (premierLeagueTeams.includes(teamName)) return 'Premier League';
+  if (laLigaTeams.includes(teamName)) return 'La Liga';
+  return 'Other League';
+};
+
 // Mock implementation of services
 export class MockPredictionService implements IPredictionService {
   async getMatchPrediction(homeTeamName: string, awayTeamName: string): Promise<MatchPrediction> {
@@ -38,7 +57,7 @@ export class MockPredictionService implements IPredictionService {
       name: homeTeamName,
       shortName: homeTeamName.split(' ').map(word => word[0]).join(''),
       logo: `/api/placeholder/80/80?text=${homeTeamName[0]}`,
-      league: 'Premier League'
+      league: getTeamLeague(homeTeamName)
     };
     
     const awayTeam = {
@@ -46,7 +65,7 @@ export class MockPredictionService implements IPredictionService {
       name: awayTeamName,
       shortName: awayTeamName.split(' ').map(word => word[0]).join(''),
       logo: `/api/placeholder/80/80?text=${awayTeamName[0]}`,
-      league: 'Premier League'
+      league: getTeamLeague(awayTeamName)
     };
     
     return PredictionEngine.calculateMatchPrediction(homeTeam, awayTeam);
@@ -91,9 +110,47 @@ export class MockPredictionService implements IPredictionService {
 }
 
 export class MockAIService implements IAIService {
-  async generateMatchAnalysis(matchId: string): Promise<AIAnalysis> {
+  private openRouterService: any;
+
+  constructor() {
+    try {
+      // Import OpenRouter service dynamically
+      const { OpenRouterService } = require('@/infrastructure/openrouter');
+      this.openRouterService = new OpenRouterService();
+    } catch (error) {
+      console.warn('OpenRouter service not available, using fallback AI');
+      this.openRouterService = null;
+    }
+  }
+
+  async generateMatchAnalysis(matchId: string, matchData?: any): Promise<AIAnalysis> {
     await new Promise(resolve => setTimeout(resolve, 1500));
     
+    // If we have match data and OpenRouter is available, use it
+    if (matchData && this.openRouterService) {
+      try {
+        const aiAnalysis = await this.openRouterService.generateAIAnalysis(matchData);
+        const insights = await this.openRouterService.generateKeyInsights(matchData);
+        const recommendations = await this.openRouterService.generatePlayerRecommendations(matchData);
+        const risks = await this.openRouterService.generateRiskFactors(matchData);
+        
+        return {
+          id: this.generateId(),
+          matchId,
+          content: aiAnalysis,
+          keyInsights: insights,
+          tacticalAnalysis: 'AI-generated tactical analysis based on current data and historical patterns.',
+          playerRecommendations: recommendations,
+          riskFactors: risks,
+          generatedAt: new Date(),
+          model: 'OpenRouter Claude-3.5-Sonnet'
+        };
+      } catch (error) {
+        console.error('OpenRouter AI generation failed, falling back:', error);
+      }
+    }
+    
+    // Fallback to static analysis
     return {
       id: this.generateId(),
       matchId,

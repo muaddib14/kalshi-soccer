@@ -28,8 +28,8 @@ const HomePage: React.FC = () => {
     setError
   } = useMatchStore();
 
-  const [homeTeam, setHomeTeam] = useState('Manchester United');
-  const [awayTeam, setAwayTeam] = useState('Arsenal');
+  const [homeTeam, setHomeTeam] = useState('Manchester City');
+  const [awayTeam, setAwayTeam] = useState('Liverpool');
   const [isPredicting, setIsPredicting] = useState(false);
 
   // Load initial data
@@ -62,11 +62,20 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const popularTeams = [
-    'Manchester United', 'Arsenal', 'Chelsea', 'Liverpool',
-    'Manchester City', 'Tottenham', 'Newcastle', 'Brighton',
-    'Aston Villa', 'West Ham', 'Leicester', 'Everton'
+  // Premier League and La Liga Teams
+  const premierLeagueTeams = [
+    'Manchester City', 'Arsenal', 'Liverpool', 'Chelsea',
+    'Manchester United', 'Tottenham', 'Newcastle', 'Brighton',
+    'Aston Villa', 'West Ham', 'Fulham', 'Crystal Palace'
   ];
+  
+  const laLigaTeams = [
+    'Real Madrid', 'Barcelona', 'Atletico Madrid', 'Sevilla',
+    'Real Betis', 'Real Sociedad', 'Villarreal', 'Valencia',
+    'Athletic Bilbao', 'Osasuna', 'Celta Vigo', 'Girona'
+  ];
+  
+  const allTeams = [...premierLeagueTeams, ...laLigaTeams];
 
   return (
     <div className="min-h-screen bg-slate-100">
@@ -95,9 +104,16 @@ const HomePage: React.FC = () => {
                     onChange={(e) => setHomeTeam(e.target.value)}
                     className="w-full px-4 py-3 rounded-lg bg-white text-slate-900 font-medium"
                   >
-                    {popularTeams.map(team => (
-                      <option key={team} value={team}>{team}</option>
-                    ))}
+                    <optgroup label="Premier League">
+                      {premierLeagueTeams.map(team => (
+                        <option key={team} value={team}>{team}</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="La Liga">
+                      {laLigaTeams.map(team => (
+                        <option key={team} value={team}>{team}</option>
+                      ))}
+                    </optgroup>
                   </select>
                 </div>
                 <div className="text-2xl font-bold self-center text-blue-400">VS</div>
@@ -107,9 +123,16 @@ const HomePage: React.FC = () => {
                     onChange={(e) => setAwayTeam(e.target.value)}
                     className="w-full px-4 py-3 rounded-lg bg-white text-slate-900 font-medium"
                   >
-                    {popularTeams.map(team => (
-                      <option key={team} value={team}>{team}</option>
-                    ))}
+                    <optgroup label="Premier League">
+                      {premierLeagueTeams.map(team => (
+                        <option key={team} value={team}>{team}</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="La Liga">
+                      {laLigaTeams.map(team => (
+                        <option key={team} value={team}>{team}</option>
+                      ))}
+                    </optgroup>
                   </select>
                 </div>
                 <Button
