@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from '@/presentation/components/layout/Header';
 import Footer from '@/presentation/components/layout/Footer';
+import FixturesDisplay from '@/presentation/components/features/fixtures/FixturesDisplay';
 import MatchForecastCard from '@/presentation/components/features/forecast/MatchForecastCard';
 import AIAnalysisCard from '@/presentation/components/features/ai/AIAnalysisCard';
 import PredictionHistoryCard from '@/presentation/components/features/history/PredictionHistoryCard';
@@ -10,6 +11,7 @@ import NewsCard from '@/presentation/components/features/news/NewsCard';
 import { Button } from '@/presentation/components/ui/Button';
 import { LoadingSpinner, MatchPredictionSkeleton, AIAnalysisSkeleton, NewsSkeleton } from '@/presentation/components/ui/Loading';
 import { useMatchStore } from '@/store/match-store';
+import { type Fixture } from '@/lib/data/fixtures';
 import { Search, RefreshCw, TrendingUp } from 'lucide-react';
 
 const HomePage: React.FC = () => {
@@ -28,8 +30,7 @@ const HomePage: React.FC = () => {
     setError
   } = useMatchStore();
 
-  const [homeTeam, setHomeTeam] = useState('Manchester City');
-  const [awayTeam, setAwayTeam] = useState('Arsenal');
+  const [selectedFixture, setSelectedFixture] = useState<Fixture | null>(null);
   const [isPredicting, setIsPredicting] = useState(false);
 
   // Load initial data
@@ -37,39 +38,37 @@ const HomePage: React.FC = () => {
     loadPredictionHistory();
     loadLatestNews();
     loadAccuracyStats();
-    
-    // Load default prediction
-    handlePrediction();
   }, []);
 
+  const handleFixtureSelect = async (fixture: Fixture) => {
+    setSelectedFixture(fixture);
+    setIsPredicting(true);
+    try {
+      await loadMatchPrediction(fixture.homeTeam.name, fixture.awayTeam.name);
+    } finally {
+      setIsPredicting(false);
+    }
+  };
+
   const handlePrediction = async () => {
-    if (!homeTeam.trim() || !awayTeam.trim()) return;
+    if (!selectedFixture) return;
     
     setIsPredicting(true);
     try {
-      await loadMatchPrediction(homeTeam, awayTeam);
+      await loadMatchPrediction(selectedFixture.homeTeam.name, selectedFixture.awayTeam.name);
     } finally {
       setIsPredicting(false);
     }
   };
 
   const handleRefresh = () => {
-    if (currentPrediction) {
+    if (currentPrediction && selectedFixture) {
       loadMatchPrediction(
-        currentPrediction.match.homeTeam.name,
-        currentPrediction.match.awayTeam.name
+        selectedFixture.homeTeam.name,
+        selectedFixture.awayTeam.name
       );
     }
   };
-
-  // All 20 Premier League Teams (2024/25 Season)
-  const premierLeagueTeams = [
-    'Arsenal', 'Aston Villa', 'Bournemouth', 'Brentford',
-    'Brighton & Hove Albion', 'Burnley', 'Chelsea', 'Crystal Palace',
-    'Everton', 'Fulham', 'Liverpool', 'Luton Town',
-    'Manchester City', 'Manchester United', 'Newcastle United', 'Nottingham Forest',
-    'Sheffield United', 'Tottenham Hotspur', 'West Ham United', 'Wolverhampton Wanderers'
-  ];
 
   return (
     <div className="min-h-screen bg-slate-100">
@@ -84,47 +83,15 @@ const HomePage: React.FC = () => {
               <span className="block text-blue-400">Betting Predictions</span>
             </h1>
             <p className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto">
-              Get accurate Premier League match forecasts, AI analysis, and data-driven insights 
-              to make smarter betting decisions across all 20 EPL teams.
+              Get AI-powered predictions for real Premier League matches. Click on any upcoming fixture below to get detailed forecasts and analysis.
             </p>
             
-            {/* Match Prediction Form */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 max-w-2xl mx-auto">
-              <h3 className="text-lg font-semibold mb-4">Predict Premier League Match</h3>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1">
-                  <select
-                    value={homeTeam}
-                    onChange={(e) => setHomeTeam(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg bg-white text-slate-900 font-medium"
-                  >
-                    {premierLeagueTeams.map(team => (
-                      <option key={team} value={team}>{team}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="text-2xl font-bold self-center text-blue-400">VS</div>
-                <div className="flex-1">
-                  <select
-                    value={awayTeam}
-                    onChange={(e) => setAwayTeam(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg bg-white text-slate-900 font-medium"
-                  >
-                    {premierLeagueTeams.map(team => (
-                      <option key={team} value={team}>{team}</option>
-                    ))}
-                  </select>
-                </div>
-                <Button
-                  onClick={handlePrediction}
-                  disabled={isPredicting || !homeTeam || !awayTeam}
-                  loading={isPredicting}
-                  size="lg"
-                  className="bg-blue-600 hover:bg-blue-700"
-                >
-                  {isPredicting ? 'Analyzing...' : 'Predict'}
-                </Button>
-              </div>
+            {/* Real Fixtures Display */}
+            <div className="max-w-4xl mx-auto">
+              <FixturesDisplay 
+                onFixtureSelect={handleFixtureSelect}
+                className="bg-white/10 backdrop-blur-sm rounded-xl p-6"
+              />
             </div>
           </div>
         </div>
