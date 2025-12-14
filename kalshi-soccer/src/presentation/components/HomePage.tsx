@@ -29,7 +29,7 @@ const HomePage: React.FC = () => {
   } = useMatchStore();
 
   const [homeTeam, setHomeTeam] = useState('Manchester City');
-  const [awayTeam, setAwayTeam] = useState('Liverpool');
+  const [awayTeam, setAwayTeam] = useState('Arsenal');
   const [isPredicting, setIsPredicting] = useState(false);
 
   // Load initial data
@@ -62,20 +62,14 @@ const HomePage: React.FC = () => {
     }
   };
 
-  // Premier League and La Liga Teams
+  // All 20 Premier League Teams (2024/25 Season)
   const premierLeagueTeams = [
-    'Manchester City', 'Arsenal', 'Liverpool', 'Chelsea',
-    'Manchester United', 'Tottenham', 'Newcastle', 'Brighton',
-    'Aston Villa', 'West Ham', 'Fulham', 'Crystal Palace'
+    'Arsenal', 'Aston Villa', 'Bournemouth', 'Brentford',
+    'Brighton & Hove Albion', 'Burnley', 'Chelsea', 'Crystal Palace',
+    'Everton', 'Fulham', 'Liverpool', 'Luton Town',
+    'Manchester City', 'Manchester United', 'Newcastle United', 'Nottingham Forest',
+    'Sheffield United', 'Tottenham Hotspur', 'West Ham United', 'Wolverhampton Wanderers'
   ];
-  
-  const laLigaTeams = [
-    'Real Madrid', 'Barcelona', 'Atletico Madrid', 'Sevilla',
-    'Real Betis', 'Real Sociedad', 'Villarreal', 'Valencia',
-    'Athletic Bilbao', 'Osasuna', 'Celta Vigo', 'Girona'
-  ];
-  
-  const allTeams = [...premierLeagueTeams, ...laLigaTeams];
 
   return (
     <div className="min-h-screen bg-slate-100">
@@ -90,13 +84,13 @@ const HomePage: React.FC = () => {
               <span className="block text-blue-400">Betting Predictions</span>
             </h1>
             <p className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto">
-              Get accurate match forecasts, AI analysis, and data-driven insights 
-              to make smarter betting decisions.
+              Get accurate Premier League match forecasts, AI analysis, and data-driven insights 
+              to make smarter betting decisions across all 20 EPL teams.
             </p>
             
             {/* Match Prediction Form */}
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 max-w-2xl mx-auto">
-              <h3 className="text-lg font-semibold mb-4">Predict Your Next Match</h3>
+              <h3 className="text-lg font-semibold mb-4">Predict Premier League Match</h3>
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">
                   <select
@@ -104,16 +98,9 @@ const HomePage: React.FC = () => {
                     onChange={(e) => setHomeTeam(e.target.value)}
                     className="w-full px-4 py-3 rounded-lg bg-white text-slate-900 font-medium"
                   >
-                    <optgroup label="Premier League">
-                      {premierLeagueTeams.map(team => (
-                        <option key={team} value={team}>{team}</option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="La Liga">
-                      {laLigaTeams.map(team => (
-                        <option key={team} value={team}>{team}</option>
-                      ))}
-                    </optgroup>
+                    {premierLeagueTeams.map(team => (
+                      <option key={team} value={team}>{team}</option>
+                    ))}
                   </select>
                 </div>
                 <div className="text-2xl font-bold self-center text-blue-400">VS</div>
@@ -123,16 +110,9 @@ const HomePage: React.FC = () => {
                     onChange={(e) => setAwayTeam(e.target.value)}
                     className="w-full px-4 py-3 rounded-lg bg-white text-slate-900 font-medium"
                   >
-                    <optgroup label="Premier League">
-                      {premierLeagueTeams.map(team => (
-                        <option key={team} value={team}>{team}</option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="La Liga">
-                      {laLigaTeams.map(team => (
-                        <option key={team} value={team}>{team}</option>
-                      ))}
-                    </optgroup>
+                    {premierLeagueTeams.map(team => (
+                      <option key={team} value={team}>{team}</option>
+                    ))}
                   </select>
                 </div>
                 <Button

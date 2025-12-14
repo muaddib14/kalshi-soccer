@@ -27,21 +27,16 @@ export interface IPredictionHistoryService {
 
 // Helper function to determine league based on team name
 const getTeamLeague = (teamName: string): string => {
-  const premierLeagueTeams = [
-    'Manchester City', 'Arsenal', 'Liverpool', 'Chelsea',
-    'Manchester United', 'Tottenham', 'Newcastle', 'Brighton',
-    'Aston Villa', 'West Ham', 'Fulham', 'Crystal Palace'
+  const allPremierLeagueTeams = [
+    'Arsenal', 'Aston Villa', 'Bournemouth', 'Brentford',
+    'Brighton & Hove Albion', 'Burnley', 'Chelsea', 'Crystal Palace',
+    'Everton', 'Fulham', 'Liverpool', 'Luton Town',
+    'Manchester City', 'Manchester United', 'Newcastle United', 'Nottingham Forest',
+    'Sheffield United', 'Tottenham Hotspur', 'West Ham United', 'Wolverhampton Wanderers'
   ];
   
-  const laLigaTeams = [
-    'Real Madrid', 'Barcelona', 'Atletico Madrid', 'Sevilla',
-    'Real Betis', 'Real Sociedad', 'Villarreal', 'Valencia',
-    'Athletic Bilbao', 'Osasuna', 'Celta Vigo', 'Girona'
-  ];
-  
-  if (premierLeagueTeams.includes(teamName)) return 'Premier League';
-  if (laLigaTeams.includes(teamName)) return 'La Liga';
-  return 'Other League';
+  if (allPremierLeagueTeams.includes(teamName)) return 'Premier League';
+  return 'Premier League'; // All teams are Premier League
 };
 
 // Mock implementation of services
