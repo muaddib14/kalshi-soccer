@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { premierLeagueFixtures, getUpcomingFixtures, formatFixtureDate, type Fixture } from '@/lib/data/fixtures';
+import { premierLeagueFixtures, getUpcomingFixtures, formatFixtureDate, DATA_SOURCE, type Fixture } from '@/lib/data/fixtures';
 import { Button } from '@/presentation/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/presentation/components/ui/Card';
-import { Clock, MapPin, Target, TrendingUp } from 'lucide-react';
+import { Clock, MapPin, Target, TrendingUp, Database, ExternalLink } from 'lucide-react';
 import { getTeamColor, getGradientFromColor } from '@/lib/utils/helpers';
 
 interface FixturesDisplayProps {
@@ -156,6 +156,39 @@ const FixturesDisplay: React.FC<FixturesDisplayProps> = ({
       {/* Match Count */}
       <div className="mt-6 text-center text-sm text-slate-500">
         Showing {displayFixtures.length} {selectedTab === 'today' ? 'today\'s' : 'upcoming'} Premier League matches
+      </div>
+
+      {/* Data Source Information */}
+      <div className="mt-8 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
+        <div className="flex items-start space-x-3">
+          <Database className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+          <div className="flex-1">
+            <div className="flex items-center space-x-2 mb-2">
+              <h4 className="font-semibold text-green-800">Real Data Integration</h4>
+              <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">
+                Enhanced
+              </span>
+            </div>
+            <p className="text-sm text-green-700 mb-3">
+              Fixture data sourced from <strong>{DATA_SOURCE.name}</strong> - {DATA_SOURCE.description}
+            </p>
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-green-600">
+                <div>Coverage: {DATA_SOURCE.coverage}</div>
+                <div>License: {DATA_SOURCE.license}</div>
+              </div>
+              <a
+                href={DATA_SOURCE.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-1 text-xs text-green-600 hover:text-green-800 transition-colors"
+              >
+                <ExternalLink className="w-3 h-3" />
+                <span>View Source</span>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
