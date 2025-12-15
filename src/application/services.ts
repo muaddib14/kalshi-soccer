@@ -36,33 +36,35 @@ const getTeamLeague = (teamName: string): string => {
   ];
   
   if (allPremierLeagueTeams.includes(teamName)) return 'Premier League';
-  return 'Premier League'; // All teams are Premier League
+  return 'Premier League'; // Default
 };
 
 // Mock implementation of services
 export class MockPredictionService implements IPredictionService {
   async getMatchPrediction(homeTeamName: string, awayTeamName: string): Promise<MatchPrediction> {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 800));
     
+    // Import the Engine which now has the smart probability logic
     const { PredictionEngine } = await import('@/domain/prediction-engine');
     
     const homeTeam = {
-      id: 'team-1',
+      id: `team-${homeTeamName.toLowerCase().replace(/\s/g, '-')}`,
       name: homeTeamName,
-      shortName: homeTeamName.split(' ').map(word => word[0]).join(''),
+      shortName: homeTeamName.substring(0, 3).toUpperCase(),
       logo: `/api/placeholder/80/80?text=${homeTeamName[0]}`,
       league: getTeamLeague(homeTeamName)
     };
     
     const awayTeam = {
-      id: 'team-2',
+      id: `team-${awayTeamName.toLowerCase().replace(/\s/g, '-')}`,
       name: awayTeamName,
-      shortName: awayTeamName.split(' ').map(word => word[0]).join(''),
+      shortName: awayTeamName.substring(0, 3).toUpperCase(),
       logo: `/api/placeholder/80/80?text=${awayTeamName[0]}`,
       league: getTeamLeague(awayTeamName)
     };
     
+    // This call will now return the improved "Win/Lose/Draw" percentages
     return PredictionEngine.calculateMatchPrediction(homeTeam, awayTeam);
   }
   

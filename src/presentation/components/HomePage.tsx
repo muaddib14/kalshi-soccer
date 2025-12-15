@@ -37,13 +37,25 @@ const HomePage: React.FC = () => {
   }, []);
 
   const handleFixtureSelect = async (fixture: Fixture) => {
-    // 1. SCROLL TO TOP - This fixes the "shows nothing" issue
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
+    // 1. Set state to show loading immediately
     setSelectedFixture(fixture);
     setIsPredicting(true);
+
     try {
+      // 2. Fetch the prediction
       await loadMatchPrediction(fixture.homeTeam.name, fixture.awayTeam.name);
+      
+      // 3. UPDATED: Scroll smoothly to the prediction section ('forecast')
+      // giving React a moment to render the new content
+      setTimeout(() => {
+        const element = document.getElementById('forecast');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+      
+    } catch (err) {
+      console.error(err);
     } finally {
       setIsPredicting(false);
     }

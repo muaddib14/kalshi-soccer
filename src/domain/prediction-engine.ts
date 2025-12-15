@@ -3,13 +3,13 @@ import { getFixtureAnalysis } from '@/lib/data/fixtures';
 
 // Domain Layer - Business logic and rules
 export class PredictionEngine {
-  // SOLID: Single Responsibility - Calculate match predictions with real data
+  // SOLID: Single Responsibility - Calculate match predictions
   static calculateMatchPrediction(homeTeam: Team, awayTeam: Team): MatchPrediction {
-    // Get real fixture analysis from OpenFootball database
+    // Get real fixture analysis from OpenFootball database (or mocks)
     const fixtureAnalysis = getFixtureAnalysis(homeTeam.name, awayTeam.name);
     
-    // Enhanced prediction using real data
-    const prediction = this.calculateRealDataPrediction(fixtureAnalysis);
+    // NEW: Calculate robust probabilities
+    const probabilities = this.calculateSmartProbabilities(homeTeam.name, awayTeam.name, fixtureAnalysis);
     
     return {
       id: this.generateId(),
@@ -21,9 +21,11 @@ export class PredictionEngine {
         league: homeTeam.league,
         status: 'scheduled'
       },
-      homeWinPercentage: prediction.homeWinProb,
-      awayWinPercentage: prediction.awayWinProb,
-      drawPercentage: prediction.drawProb,
+      // Use the calculated smart probabilities
+      homeWinPercentage: probabilities.homeWin,
+      awayWinPercentage: probabilities.awayWin,
+      drawPercentage: probabilities.draw,
+      
       overUnder: {
         over15: this.calculateOverUnder(1.5, fixtureAnalysis),
         under15: 100 - this.calculateOverUnder(1.5, fixtureAnalysis),
@@ -32,10 +34,9 @@ export class PredictionEngine {
         over35: this.calculateOverUnder(3.5, fixtureAnalysis),
         under35: 100 - this.calculateOverUnder(3.5, fixtureAnalysis)
       },
-      confidence: this.determineConfidence(prediction.homeWinProb, prediction.awayWinProb, prediction.drawProb),
+      confidence: this.determineConfidence(probabilities.homeWin, probabilities.awayWin, probabilities.draw),
       algorithm: 'Kalshi ML v3.0 Enhanced',
       lastUpdated: new Date(),
-      // Enhanced data from real fixture analysis
       realDataAnalysis: {
         homeStats: fixtureAnalysis.homeStats,
         awayStats: fixtureAnalysis.awayStats,
@@ -45,97 +46,76 @@ export class PredictionEngine {
     };
   }
 
-  // SOLID: Single Responsibility - Enhanced prediction using real data
-  private static calculateRealDataPrediction(fixtureAnalysis: any) {
-    const { homeStats, awayStats, headToHead, recentForm } = fixtureAnalysis;
+  // --- NEW LOGIC: SMART PROBABILITIES ---
+  private static calculateSmartProbabilities(homeName: string, awayName: string, analysis?: any) {
+    // 1. Define "Power Teams" (Big 6 + Giants)
+    const strongTeams = [
+      'Manchester City', 'Arsenal', 'Liverpool', 'Real Madrid', 'Barcelona', 
+      'Bayern Munich', 'Paris Saint-Germain', 'Inter Milan', 'Manchester United', 
+      'Chelsea', 'Tottenham Hotspur', 'Juventus', 'Atletico Madrid'
+    ];
     
-    // Base probabilities using team strength
-    let homeWinProb = 35;
-    let awayWinProb = 30;
-    let drawProb = 35;
-    
-    // Team strength factor (win rate difference)
-    const strengthDiff = (homeStats.winRate - awayStats.winRate) / 100;
-    homeWinProb += strengthDiff * 15; // +/-15% based on strength difference
-    
-    // Goals factor (attacking vs defensive strength)
-    const homeGoalsFactor = homeStats.avgGoalsFor - awayStats.avgGoalsAgainst;
-    const awayGoalsFactor = awayStats.avgGoalsFor - homeStats.avgGoalsAgainst;
-    
-    homeWinProb += homeGoalsFactor * 8;
-    awayWinProb += awayGoalsFactor * 6;
-    
-    // Head-to-head factor
-    if (headToHead.total > 0) {
-      const homeWinRateH2H = headToHead.homeWins / headToHead.total;
-      const awayWinRateH2H = headToHead.awayWins / headToHead.total;
-      const drawRateH2H = headToHead.draws / headToHead.total;
-      
-      homeWinProb += (homeWinRateH2H - 0.33) * 10; // Adjust based on H2H
-      awayWinProb += (awayWinRateH2H - 0.33) * 8;
-      drawProb += (drawRateH2H - 0.33) * 5;
+    let homeStrength = 50; // Base strength
+    let awayStrength = 50;
+
+    // Boost for strong teams
+    if (strongTeams.some(t => homeName.includes(t))) homeStrength += 25;
+    if (strongTeams.some(t => awayName.includes(t))) awayStrength += 25;
+
+    // 2. Add Analysis Data Influence (if available)
+    if (analysis) {
+        // Win rate contribution (0-10 pts)
+        homeStrength += (analysis.homeStats.winRate / 10); 
+        awayStrength += (analysis.awayStats.winRate / 10);
+        
+        // Form contribution (Recent wins add strength)
+        const homeRecentWins = analysis.recentForm.home.filter((r: string) => r === 'W').length;
+        const awayRecentWins = analysis.recentForm.away.filter((r: string) => r === 'W').length;
+        homeStrength += homeRecentWins * 3;
+        awayStrength += awayRecentWins * 3;
     }
+
+    // 3. Home Advantage (+15%)
+    const homeFieldAdvantage = 15;
+    const adjustedHomeStrength = homeStrength + homeFieldAdvantage;
+
+    // 4. Calculate Differential
+    const diff = adjustedHomeStrength - awayStrength;
+
+    // 5. Base Probabilities
+    let homeWin = 35; 
+    let draw = 30;
+    let awayWin = 35;
+
+    // Shift based on differential
+    // If Home is stronger (diff > 0), HomeWin goes UP, AwayWin goes DOWN
+    homeWin += diff * 0.6; 
+    awayWin -= diff * 0.6;
+
+    // Draw logic: Draw is most likely when teams are equal (diff ~ 0)
+    // Draw probability drops as the mismatch gets bigger
+    draw = 30 - (Math.abs(diff) * 0.15);
+
+    // 6. Clamp values (Keep them realistic, between 5% and 90%)
+    homeWin = Math.max(5, Math.min(90, homeWin));
+    awayWin = Math.max(5, Math.min(90, awayWin));
+    draw = Math.max(5, Math.min(90, draw));
+
+    // 7. NORMALIZE (Crucial: Ensure sum is exactly 100%)
+    const total = homeWin + awayWin + draw;
     
-    // Recent form factor (last 5 matches)
-    const homeFormPoints = recentForm.home.reduce((acc: number, result: string) => {
-      return acc + (result === 'W' ? 3 : result === 'D' ? 1 : 0);
-    }, 0);
-    const awayFormPoints = recentForm.away.reduce((acc: number, result: string) => {
-      return acc + (result === 'W' ? 3 : result === 'D' ? 1 : 0);
-    }, 0);
-    
-    const formDiff = (homeFormPoints - awayFormPoints) / 15; // Normalize to -1 to 1
-    homeWinProb += formDiff * 10;
-    
-    // Home advantage (still applies even with real data)
-    homeWinProb += 8; // Standard home advantage
-    
-    // Ensure probabilities are realistic
-    homeWinProb = Math.max(15, Math.min(70, homeWinProb));
-    awayWinProb = Math.max(15, Math.min(60, awayWinProb));
-    drawProb = Math.max(15, Math.min(50, drawProb));
-    
-    // Normalize to ensure they sum to 100
-    const total = homeWinProb + awayWinProb + drawProb;
-    homeWinProb = (homeWinProb / total) * 100;
-    awayWinProb = (awayWinProb / total) * 100;
-    drawProb = (drawProb / total) * 100;
-    
+    const finalHome = Math.round((homeWin / total) * 100);
+    const finalAway = Math.round((awayWin / total) * 100);
+    const finalDraw = 100 - finalHome - finalAway; // Remainder
+
     return {
-      homeWinProb: Math.round(homeWinProb * 10) / 10,
-      awayWinProb: Math.round(awayWinProb * 10) / 10,
-      drawProb: Math.round(drawProb * 10) / 10
+      homeWin: finalHome,
+      awayWin: finalAway,
+      draw: finalDraw
     };
   }
-  
-  // SOLID: Single Responsibility - Calculate home advantage
-  private static calculateHomeAdvantage(): number {
-    return Math.random() * 10 + 5; // 5-15% advantage
-  }
-  
-  // SOLID: Single Responsibility - Calculate form factors
-  private static calculateFormFactor(homeTeam: Team, awayTeam: Team) {
-    const homeForm = Math.random() * 15 - 5; // -5 to +10
-    const awayForm = Math.random() * 15 - 10; // -10 to +5
-    
-    return {
-      homeAdvantage: homeForm,
-      awayAdvantage: awayForm
-    };
-  }
-  
-  // SOLID: Single Responsibility - Calculate league-specific factors
-  private static calculateLeagueFactor(homeTeam: Team, awayTeam: Team) {
-    const majorLeagues = ['Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1'];
-    const isMajorLeague = majorLeagues.includes(homeTeam.league);
-    
-    return {
-      home: isMajorLeague ? 3 : 0,
-      away: isMajorLeague ? 2 : 1
-    };
-  }
-  
-  // SOLID: Single Responsibility - Calculate over/under goals with real data
+
+  // Calculate over/under goals
   private static calculateOverUnder(threshold: number, fixtureAnalysis?: any): number {
     let baseProbability: number;
     
@@ -143,7 +123,6 @@ export class PredictionEngine {
       const { homeStats, awayStats } = fixtureAnalysis;
       const expectedTotalGoals = homeStats.avgGoalsFor + awayStats.avgGoalsFor;
       
-      // Calculate probability based on expected goals
       if (threshold <= 1.5) {
         baseProbability = expectedTotalGoals > 2.5 ? 85 : 70;
       } else if (threshold <= 2.5) {
@@ -152,26 +131,22 @@ export class PredictionEngine {
         baseProbability = expectedTotalGoals > 3.0 ? 40 : 25;
       }
     } else {
-      // Fallback to original logic
       baseProbability = threshold <= 1.5 ? 75 : threshold <= 2.5 ? 55 : 35;
     }
     
-    const variance = Math.random() * 15 - 7.5; // ±7.5 variance (reduced with real data)
-    return Math.max(10, Math.min(90, baseProbability + variance));
+    const variance = Math.random() * 10 - 5;
+    return Math.max(10, Math.min(90, Math.round(baseProbability + variance)));
   }
   
-  // SOLID: Single Responsibility - Determine confidence level
+  // Determine confidence level
   private static determineConfidence(homeWin: number, awayWin: number, draw: number): 'low' | 'medium' | 'high' {
     const max = Math.max(homeWin, awayWin, draw);
-    const min = Math.min(homeWin, awayWin, draw);
-    const spread = max - min;
-    
-    if (spread > 30) return 'high';
-    if (spread > 15) return 'medium';
+    if (max > 60) return 'high';
+    if (max > 45) return 'medium';
     return 'low';
   }
   
-  // SOLID: Single Responsibility - Generate unique ID
+  // Generate unique ID
   private static generateId(): string {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }

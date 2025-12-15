@@ -20,20 +20,33 @@ export function formatCurrency(value: number): string {
   }).format(value);
 }
 
-// Format dates
-export function formatDate(date: Date): string {
+// Format dates (Updated to handle strings safely)
+export function formatDate(date: Date | string): string {
+  const dateObj = new Date(date);
+  // Check if valid
+  if (isNaN(dateObj.getTime())) return '';
+  
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit'
-  }).format(date);
+  }).format(dateObj);
 }
 
-export function formatRelativeTime(date: Date): string {
+// UPDATED: Robust relative time formatting
+export function formatRelativeTime(date: Date | string): string {
+  // Ensure we are working with a Date object
+  const dateObj = new Date(date);
   const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  
+  // Safety check: if date is invalid, return a default
+  if (isNaN(dateObj.getTime())) {
+    return 'Just now';
+  }
+
+  const diffInSeconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
   
   if (diffInSeconds < 60) {
     return 'Just now';

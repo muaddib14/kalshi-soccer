@@ -32,7 +32,6 @@ export class PredictionAPI implements IPredictionService {
     } catch (error) {
       console.error('Prediction API error:', error);
       // Fallback to mock service
-      // Note: We use dynamic import to avoid circular dependency issues
       const MockPredictionService = (await import('@/application/services')).MockPredictionService;
       const mockService = new MockPredictionService();
       return mockService.getMatchPrediction(homeTeamName, awayTeamName);
@@ -62,17 +61,22 @@ export class PredictionAPI implements IPredictionService {
 }
 
 export class AIAnalysisAPI implements IAIService {
-  private baseURL = process.env.NEXT_PUBLIC_AI_API_URL || 'https://api.kalshi-ai.com';
+  // UPDATED: Point to your local Next.js API route
+  private baseURL = '/api/ai'; 
   
-  async generateMatchAnalysis(matchId: string) {
+  // UPDATED: Accept matchData to pass to the AI
+  async generateMatchAnalysis(matchId: string, matchData?: any) {
     try {
       const response = await fetch(`${this.baseURL}/analysis`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_AI_API_KEY}`
+          // No Authorization header needed for local API route
         },
-        body: JSON.stringify({ matchId })
+        body: JSON.stringify({ 
+          matchId,
+          ...matchData // Pass the full context (teams, form, etc.)
+        })
       });
       
       if (!response.ok) {
@@ -82,17 +86,20 @@ export class AIAnalysisAPI implements IAIService {
       return await response.json();
     } catch (error) {
       console.error('AI Analysis API error:', error);
+      // Fallback to mock service
       const MockAIService = (await import('@/application/services')).MockAIService;
       const mockService = new MockAIService();
-      return mockService.generateMatchAnalysis(matchId);
+      return mockService.generateMatchAnalysis(matchId, matchData);
     }
   }
   
   async getTeamInsights(teamId: string) {
     try {
-      const response = await fetch(`${this.baseURL}/teams/${teamId}/insights`, {
+      // You can implement a similar route for insights if needed: /api/ai/insights
+      const response = await fetch(`${this.baseURL}/insights?teamId=${teamId}`, {
+        method: 'GET',
         headers: {
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_AI_API_KEY}`
+          'Content-Type': 'application/json',
         }
       });
       
