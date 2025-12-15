@@ -8,6 +8,7 @@ export {
   AIAnalysisSkeleton, 
   NewsSkeleton 
 } from './ui/Loading';
+export { default as ErrorMessage } from './ui/ErrorMessage';
 
 // Feature Components
 export { default as MatchForecastCard } from './features/forecast/MatchForecastCard';
@@ -18,6 +19,9 @@ export { default as NewsCard } from './features/news/NewsCard';
 // Layout Components
 export { default as Header } from './layout/Header';
 export { default as Footer } from './layout/Footer';
+
+// Section Components
+export * from './sections';
 
 // Main Page
 export { default as HomePage } from './HomePage';
