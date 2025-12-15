@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/presentation/components/ui/Button';
 import { Search, Menu, X, LayoutDashboard, Home } from 'lucide-react';
@@ -37,9 +38,15 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
           {/* Logo and Brand */}
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center group">
-              {/* UPDATED: Green Gradient Logo */}
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-600 to-teal-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
-                <span className="text-white font-bold text-sm font-heading">K</span>
+              {/* UPDATED: Logo Image */}
+              <div className="w-8 h-8 rounded-lg overflow-hidden group-hover:scale-105 transition-transform shadow-sm">
+                <Image
+                  src="/logo.jpeg"
+                  alt="Kalshi Soccer Logo"
+                  width={32}
+                  height={32}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <h1 className="ml-3 text-xl font-bold text-slate-900 group-hover:text-emerald-700 transition-colors font-heading uppercase tracking-tight">
                 Kalshi Soccer

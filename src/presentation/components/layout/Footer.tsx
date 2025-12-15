@@ -1,6 +1,7 @@
 import React from 'react';
 import { Github, Twitter, Mail, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Footer: React.FC = () => {
   return (
@@ -11,9 +12,15 @@ const Footer: React.FC = () => {
           {/* Brand Section */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center mb-4">
-              {/* UPDATED: Logo colors */}
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-900/50">
-                <span className="text-white font-bold text-sm font-heading">K</span>
+              {/* UPDATED: Logo Image */}
+              <div className="w-8 h-8 rounded-lg overflow-hidden shadow-lg shadow-emerald-900/50">
+                <Image
+                  src="/logo.jpeg"
+                  alt="Kalshi Soccer Logo"
+                  width={32}
+                  height={32}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <h3 className="ml-3 text-xl font-bold font-heading uppercase tracking-wide">Kalshi Soccer</h3>
             </div>
