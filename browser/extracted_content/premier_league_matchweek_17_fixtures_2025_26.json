@@ -1,0 +1,113 @@
+📄 Extracted from page: Premier League Fixtures & Live Matches on TV Season 2025/26
+URL: https://www.premierleague.com/en/matches?competition=8&season=2025&matchweek=17&month=12
+
+Extracted content:
+```json
+{
+  "title": "Premier League Fixtures & Live Matches on TV Season 2025/26",
+  "url": "https://www.premierleague.com/en/matches?competition=8&season=2025&matchweek=17&month=12",
+  "summary": "This page details all upcoming Premier League fixtures for Matchweek 17 of the 2025/26 season, scheduled from Saturday, December 20th to Monday, December 22nd, 2025. It provides specific match dates, kick-off times, home teams, and away teams for all ten matches in this matchweek. Venue information for individual matches is not explicitly listed.",
+  "key_points": [
+    "All fixtures for Premier League Matchweek 17, Season 2025/26 are listed.",
+    "Matches are scheduled across three days: Saturday, December 20th; Sunday, December 21st; and Monday, December 22nd, 2025.",
+    "Each fixture includes the kick-off time, home team, and away team.",
+    "A total of 10 matches are scheduled for Matchweek 17.",
+    "Venue details are not explicitly provided for each individual fixture."
+  ],
+  "relevant_links": [
+    "https://www.premierleague.com/en/match/2562062/newcastle-united-vs-chelsea",
+    "https://www.premierleague.com/en/match/2562055/bournemouth-vs-burnley",
+    "https://www.premierleague.com/en/match/2562057/brighton-and-hove-albion-vs-sunderland",
+    "https://www.premierleague.com/en/match/2562061/manchester-city-vs-west-ham-united",
+    "https://www.premierleague.com/en/match/2562064/wolverhampton-wanderers-vs-brentford",
+    "https://www.premierleague.com/en/match/2562063/tottenham-hotspur-vs-liverpool",
+    "https://www.premierleague.com/en/match/2562058/everton-vs-arsenal",
+    "https://www.premierleague.com/en/match/2562060/leeds-united-vs-crystal-palace",
+    "https://www.premierleague.com/en/match/2562056/aston-villa-vs-manchester-united",
+    "https://www.premierleague.com/en/match/2562059/fulham-vs-nottingham-forest"
+  ],
+  "fixtures": [
+    {
+      "date": "2025-12-20",
+      "kick_off_time": "12:30",
+      "home_team": "Newcastle United",
+      "away_team": "Chelsea",
+      "venue": "Not specified",
+      "match_status": "Upcoming"
+    },
+    {
+      "date": "2025-12-20",
+      "kick_off_time": "15:00",
+      "home_team": "Bournemouth",
+      "away_team": "Burnley",
+      "venue": "Not specified",
+      "match_status": "Upcoming"
+    },
+    {
+      "date": "2025-12-20",
+      "kick_off_time": "15:00",
+      "home_team": "Brighton and Hove Albion",
+      "away_team": "Sunderland",
+      "venue": "Not specified",
+      "match_status": "Upcoming"
+    },
+    {
+      "date": "2025-12-20",
+      "kick_off_time": "15:00",
+      "home_team": "Manchester City",
+      "away_team": "West Ham United",
+      "venue": "Not specified",
+      "match_status": "Upcoming"
+    },
+    {
+      "date": "2025-12-20",
+      "kick_off_time": "15:00",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Brentford",
+      "venue": "Not specified",
+      "match_status": "Upcoming"
+    },
+    {
+      "date": "2025-12-20",
+      "kick_off_time": "17:30",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Liverpool",
+      "venue": "Not specified",
+      "match_status": "Upcoming"
+    },
+    {
+      "date": "2025-12-20",
+      "kick_off_time": "20:00",
+      "home_team": "Everton",
+      "away_team": "Arsenal",
+      "venue": "Not specified",
+      "match_status": "Upcoming"
+    },
+    {
+      "date": "2025-12-20",
+      "kick_off_time": "20:00",
+      "home_team": "Leeds United",
+      "away_team": "Crystal Palace",
+      "venue": "Not specified",
+      "match_status": "Upcoming"
+    },
+    {
+      "date": "2025-12-21",
+      "kick_off_time": "16:30",
+      "home_team": "Aston Villa",
+      "away_team": "Manchester United",
+      "venue": "Not specified",
+      "match_status": "Upcoming"
+    },
+    {
+      "date": "2025-12-22",
+      "kick_off_time": "20:00",
+      "home_team": "Fulham",
+      "away_team": "Nottingham Forest",
+      "venue": "Not specified",
+      "match_status": "Upcoming"
+    }
+  ],
+  "file_name": "premier_league_matchweek_17_fixtures_2025_26.json"
+}
+```
