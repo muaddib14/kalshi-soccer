@@ -1,17 +1,60 @@
 // src/app/page.tsx
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, BarChart2, Shield, Zap, Trophy } from 'lucide-react';
+import { 
+  ArrowRight, 
+  BarChart2, 
+  Shield, 
+  Zap, 
+  Target, 
+  Users, 
+  TrendingUp,
+  Newspaper,
+  Coins
+} from 'lucide-react';
 import Header from '@/presentation/components/layout/Header';
 import Footer from '@/presentation/components/layout/Footer';
+import InteractiveBackground from '@/presentation/components/ui/InteractiveBackground';
 
 export default function LandingPage() {
+  // We define features here to map them easily
+  const features = [
+    { 
+      icon: <Zap className="w-8 h-8 text-yellow-500" />,
+      title: "Real-Time Live Data",
+      desc: "Instant updates on goals, cards, and momentum shifts directly from the Premier League feed."
+    },
+    { 
+      icon: <BarChart2 className="w-8 h-8 text-blue-500" />,
+      title: "Deep Stat Analysis",
+      desc: "Algorithms processing 50+ unique metrics per match including xG, possession maps, and heatmaps."
+    },
+    { 
+      icon: <Shield className="w-8 h-8 text-emerald-500" />,
+      title: "Risk Management",
+      desc: "Get confidence scores and bankroll management advice to bet smarter, not harder."
+    },
+    { 
+      icon: <Newspaper className="w-8 h-8 text-purple-500" />,
+      title: "Squad Intelligence",
+      desc: "Latest injury news and confirmed lineups integrated directly into prediction models."
+    },
+    { 
+      icon: <Coins className="w-8 h-8 text-orange-500" />,
+      title: "Value Bet Detection",
+      desc: "AI identifies market inefficiencies where bookmaker odds don't match real probabilities."
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 overflow-x-hidden">
       <Header />
       
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-slate-900 text-white pt-24 pb-32">
+
+        <InteractiveBackground className="opacity-60" />
+
         <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-10" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
@@ -62,30 +105,31 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Feature Grid */}
-      <section id="features" className="py-24 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+      {/* Scrolling Feature Grid (Marquee) */}
+      <section id="features" className="py-24 bg-slate-50 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+          <div className="text-center">
             <h2 className="text-3xl font-bold text-slate-900 mb-4">Why Kalshi Soccer?</h2>
             <p className="text-lg text-slate-600">Advanced tools for the modern bettor.</p>
           </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <FeatureCard 
-              icon={<Zap className="w-8 h-8 text-yellow-500" />}
-              title="Real-Time Live Data"
-              desc="Instant updates on goals, cards, and momentum shifts directly from the Premier League feed."
-            />
-            <FeatureCard 
-              icon={<BarChart2 className="w-8 h-8 text-blue-500" />}
-              title="Deep Statistical Analysis"
-              desc="Our algorithms process over 50 unique metrics per match including xG, possession maps, and player heatmaps."
-            />
-            <FeatureCard 
-              icon={<Shield className="w-8 h-8 text-green-500" />}
-              title="Risk Management"
-              desc="Get confidence scores and bankroll management advice to bet smarter, not harder."
-            />
+        </div>
+        
+        {/* Marquee Container */}
+        <div className="relative w-full">
+          {/* Gradient Masks for fading effect at edges */}
+          <div className="absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-slate-50 to-transparent pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-slate-50 to-transparent pointer-events-none" />
+
+          {/* The Scrolling Track */}
+          <div className="flex w-max animate-scroll hover:pause gap-8 px-8">
+            {/* Set 1 */}
+            {features.map((feature, i) => (
+              <FeatureCard key={`f1-${i}`} {...feature} />
+            ))}
+            {/* Set 2 (Duplicate for infinite loop) */}
+            {features.map((feature, i) => (
+              <FeatureCard key={`f2-${i}`} {...feature} />
+            ))}
           </div>
         </div>
       </section>
@@ -95,13 +139,11 @@ export default function LandingPage() {
   );
 }
 
+// Updated Feature Card component with fixed width for smooth scrolling
 const FeatureCard = ({ icon, title, desc }: { icon: any, title: string, desc: string }) => (
-  <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
-    <div className="mb-4">{icon}</div>
+  <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-lg hover:border-emerald-200 transition-all w-[350px] flex-shrink-0 cursor-default">
+    <div className="mb-4 bg-slate-50 w-fit p-3 rounded-xl">{icon}</div>
     <h3 className="text-xl font-bold text-slate-900 mb-2">{title}</h3>
-    <p className="text-slate-600">{desc}</p>
+    <p className="text-slate-600 leading-relaxed">{desc}</p>
   </div>
 );
-
-// You'll need to import these icons from lucide-react
-import { Target, Users, TrendingUp } from 'lucide-react';

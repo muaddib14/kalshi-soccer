@@ -40,3 +40,25 @@
     color: var(--pitch-accent);
   }
 }
+
+/* src/app/globals.css */
+
+@layer utilities {
+  .animate-scroll {
+    animation: scroll 40s linear infinite;
+  }
+  
+  /* Pause animation when user hovers over it */
+  .hover\:pause:hover {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50% - 2rem)); /* Moves half way + gap */
+  }
+}
