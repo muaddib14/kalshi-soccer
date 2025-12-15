@@ -1,8 +1,27 @@
-# Kalshi Soccer - AI-Powered Football Betting Advisor
+# Kalshi Soccer - AI-Powered Football Betting Predictions
 
-![Kalshi Soccer Logo](https://img.shields.io/badge/Kalshi%20Soccer-Football%20Predictions-blue?style=for-the-badge)
+[![Next.js](https://img.shields.io/badge/Next.js-14.2.0-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.4.3-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.1-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
+[![pnpm](https://img.shields.io/badge/pnpm-8.15.4-F69220?logo=pnpm)](https://pnpm.io/)
 
-An advanced football betting prediction platform built with Next.js, featuring AI-powered match analysis, data-driven forecasting, and comprehensive betting insights.
+> AI-powered football betting predictions for the Premier League with real data integration
+
+## 🚀 Quick Start
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm dev
+
+# Build for production
+pnpm build
+
+# Start production server
+pnpm start
+```
 
 ## 🎯 Features
 
@@ -45,29 +64,37 @@ An advanced football betting prediction platform built with Next.js, featuring A
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18.19.0 or higher
-- npm or yarn package manager
+- Node.js 18+ 
+- pnpm 8+
 
 ### Installation
 
-1. **Clone and install dependencies:**
-```bash
-cd kalshi-soccer
-npm install
-```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/muaddib14/kalshi-soccer.git
+   cd kalshi-soccer
+   ```
 
-2. **Run the development server:**
-```bash
-npm run dev
-```
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
 
-3. **Open in browser:**
-Navigate to [http://localhost:3000](http://localhost:3000)
+3. **Start development server**
+   ```bash
+   pnpm dev
+   ```
 
-### Build for Production
-```bash
-npm run build
-npm start
+4. **Open browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+### Environment Variables
+
+Create a `.env.local` file:
+
+```env
+# OpenRouter AI API Key
+OPENROUTER_API_KEY=your_openrouter_api_key_here
 ```
 
 ## 🎮 Usage
@@ -105,14 +132,21 @@ npm start
 - **Historical Data**: Analyze prediction trends
 - **Confidence Scoring**: Measure certainty levels
 
-## 🛠️ Technology Stack
+## 🔌 Data Sources
 
-- **Frontend**: Next.js 14 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
+- **Official Premier League**: Real-time fixture data and results
+- **OpenFootball Database**: Historical match data and statistics
+- **OpenRouter AI**: Advanced prediction algorithms
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 14 with App Router
+- **Language**: TypeScript 5.4.3
+- **Styling**: Tailwind CSS 3.4.1
 - **State Management**: Zustand
 - **Icons**: Lucide React
-- **Fonts**: Inter (UI) + Oswald (Headings)
+- **Package Manager**: pnpm
+- **Linting**: ESLint 9
 
 ## 📱 Responsive Design
 
@@ -144,10 +178,10 @@ npm start
 
 ### Available Scripts
 ```bash
-npm run dev          # Development server
-npm run build        # Production build
-npm run start        # Start production server
-npm run lint         # ESLint checks
+pnpm dev          # Development server
+pnpm build        # Production build
+pnpm start        # Start production server
+pnpm lint         # ESLint checks
 ```
 
 ## 📈 Future Enhancements
@@ -158,23 +192,39 @@ npm run lint         # ESLint checks
 - **Advanced Analytics**: Machine learning models
 - **Social Features**: Community predictions
 
+## 📖 Documentation
+
+- [Architecture Overview](./ARCHITECTURE.md) - Detailed information about the clean architecture implementation
+- [Component Structure](./src/presentation/components/) - Component documentation and usage
+
+## 🚀 Deployment
+
+This project can be deployed to:
+
+- **Vercel** (recommended for Next.js)
+- **Netlify**
+- **AWS Amplify**
+- **Any Node.js hosting platform**
+
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Follow coding standards
-4. Submit a pull request
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## ⚠️ Disclaimer
+## 🙏 Acknowledgments
 
-This platform provides predictions for informational purposes only. Gambling involves risk, and you should never bet more than you can afford to lose. Please gamble responsibly.
+- **Premier League** for official data
+- **OpenFootball** for historical data
+- **OpenRouter** for AI prediction capabilities
+- **Next.js team** for the amazing framework
 
 ---
 
-**Author**: MiniMax Agent  
-**Version**: 1.0.0  
-**Last Updated**: December 15, 2025
+**Built with ❤️ by MiniMax Agent**
