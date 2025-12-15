@@ -1,112 +1,115 @@
-'use client';
-
 import React from 'react';
-import { Card, CardContent, CardHeader } from '@/presentation/components/ui/Card';
+import Image from 'next/image';
+import { Calendar, Clock, MapPin, TrendingUp, CircleDot } from 'lucide-react';
+import { Card } from '@/presentation/components/ui/Card';
 import { Button } from '@/presentation/components/ui/Button';
-import { Clock, MapPin, Target, TrendingUp, CheckCircle } from 'lucide-react';
-import { formatFixtureDate, getGradientFromColor } from '@/lib/data/fixtures';
 import { type Fixture } from '@/lib/data/fixtures';
 
 interface FixtureCardProps {
   fixture: Fixture;
-  onClick: (fixture: Fixture) => void;
+  onPredict?: (fixture: Fixture) => void;
 }
 
-const FixtureCard: React.FC<FixtureCardProps> = ({ fixture, onClick }) => {
-  const formattedDate = formatFixtureDate(fixture.date);
+const FixtureCard: React.FC<FixtureCardProps> = ({ fixture, onPredict }) => {
+  const isLive = fixture.status === 'LIVE' || fixture.status === 'PAUSED';
+  const isFinished = fixture.status === 'FINISHED';
+
+  // Helper to render logo or placeholder
+  const TeamLogo = ({ name, url }: { name: string; url?: string }) => (
+    <div className="relative w-12 h-12 mb-2 flex items-center justify-center bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+      {url ? (
+        <Image 
+          src={url} 
+          alt={name} 
+          fill 
+          className="object-contain p-2"
+          sizes="48px"
+        />
+      ) : (
+        <span className="text-xs font-bold text-slate-400">
+          {name.substring(0, 3).toUpperCase()}
+        </span>
+      )}
+    </div>
+  );
 
   return (
-    <Card 
-      key={fixture.id}
-      className="hover:shadow-lg transition-all duration-300 cursor-pointer border-l-4 border-l-blue-500"
-      onClick={() => onClick(fixture)}
-    >
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2 text-sm text-slate-600">
-            <Clock className="w-4 h-4" />
-            <span>{formattedDate.weekday}</span>
-            <span>{formattedDate.day} {formattedDate.month}</span>
-            <span>{formattedDate.time}</span>
-          </div>
-          <div className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-semibold">
-            MW {fixture.matchweek}
-          </div>
+    <Card className="hover:shadow-lg transition-all duration-300 border-slate-200 overflow-hidden group">
+      {/* Header: Status Badge */}
+      <div className="bg-slate-50 px-4 py-2 border-b border-slate-100 flex justify-between items-center">
+        <div className="flex items-center space-x-2">
+          {isLive ? (
+             <span className="flex items-center text-red-600 text-xs font-bold animate-pulse">
+               <CircleDot className="w-3 h-3 mr-1" />
+               LIVE {fixture.minute ? `'${fixture.minute}` : ''}
+             </span>
+          ) : (
+            <span className="flex items-center text-slate-500 text-xs font-medium">
+              <Calendar className="w-3 h-3 mr-1" />
+              {new Date(fixture.date).toLocaleDateString()}
+            </span>
+          )}
         </div>
-        <div className="flex items-center text-sm text-slate-600">
-          <MapPin className="w-4 h-4 mr-1" />
-          <span>{fixture.venue}</span>
-        </div>
-      </CardHeader>
+        {!isLive && !isFinished && (
+          <div className="flex items-center text-slate-500 text-xs">
+            <Clock className="w-3 h-3 mr-1" />
+            {new Date(fixture.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </div>
+        )}
+      </div>
 
-      <CardContent className="pt-0">
-        {/* Teams Display */}
-        <div className="flex items-center justify-between mb-4">
+      <div className="p-5">
+        <div className="flex justify-between items-center mb-6">
           {/* Home Team */}
-          <div className="flex-1 text-center">
-            <div className={`w-16 h-16 mx-auto mb-2 rounded-full ${getGradientFromColor(fixture.homeTeam.color)} flex items-center justify-center text-white font-bold text-lg shadow-lg`}>
-              {fixture.homeTeam.shortName}
-            </div>
-            <h3 className="font-semibold text-slate-900 text-sm leading-tight">
+          <div className="flex flex-col items-center w-1/3 text-center">
+            <TeamLogo name={fixture.homeTeam.name} url={fixture.homeTeam.logo} />
+            <span className="font-bold text-slate-900 text-sm md:text-base leading-tight">
               {fixture.homeTeam.name}
-            </h3>
+            </span>
           </div>
 
-          {/* VS and Quick Stats or Score */}
-          <div className="flex flex-col items-center px-4">
-            {fixture.status === 'completed' && fixture.result ? (
-              <div className="text-center">
-                <div className="text-3xl font-bold text-slate-900 mb-2">
-                  {fixture.result.home} - {fixture.result.away}
-                </div>
-                <div className="text-xs text-green-600 font-medium">FT</div>
+          {/* Score / VS */}
+          <div className="flex flex-col items-center justify-center w-1/3">
+            {isLive || isFinished ? (
+              <div className="text-3xl font-bold text-slate-900 tracking-wider">
+                {fixture.homeTeam.score} - {fixture.awayTeam.score}
               </div>
             ) : (
-              <>
-                <div className="text-2xl font-bold text-slate-400 mb-2">VS</div>
-                <div className="text-xs text-slate-500 text-center">
-                  <div className="flex items-center space-x-1">
-                    <TrendingUp className="w-3 h-3" />
-                    <span>Get Prediction</span>
-                  </div>
-                </div>
-              </>
+              <span className="text-slate-400 font-bold text-xl bg-slate-100 px-3 py-1 rounded">VS</span>
             )}
           </div>
 
           {/* Away Team */}
-          <div className="flex-1 text-center">
-            <div className={`w-16 h-16 mx-auto mb-2 rounded-full ${getGradientFromColor(fixture.awayTeam.color)} flex items-center justify-center text-white font-bold text-lg shadow-lg`}>
-              {fixture.awayTeam.shortName}
-            </div>
-            <h3 className="font-semibold text-slate-900 text-sm leading-tight">
+          <div className="flex flex-col items-center w-1/3 text-center">
+             <TeamLogo name={fixture.awayTeam.name} url={fixture.awayTeam.logo} />
+            <span className="font-bold text-slate-900 text-sm md:text-base leading-tight">
               {fixture.awayTeam.name}
-            </h3>
+            </span>
           </div>
         </div>
 
-        {/* Action Button */}
-        {fixture.status === 'scheduled' ? (
-          <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              onClick(fixture);
-            }}
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2"
-            size="sm"
-          >
-            <Target className="w-4 h-4 mr-2" />
-            Get AI Prediction
-          </Button>
-        ) : (
-          <div className="w-full bg-green-50 border border-green-200 rounded-lg p-2 text-center">
-            <div className="text-xs text-green-700 font-medium">
-              <CheckCircle className="w-3 h-3 inline mr-1" />
-              Match Completed
+        <div className="space-y-3">
+          {fixture.venue && (
+            <div className="flex items-center justify-center text-xs text-slate-500">
+              <MapPin className="w-3 h-3 mr-1" />
+              {fixture.venue}
             </div>
-          </div>
-        )}
-      </CardContent>
+          )}
+
+          {/* PREDICT BUTTON - Only show for Scheduled or Live matches */}
+          {!isFinished && (
+            <Button 
+              variant="outline" 
+              // UPDATED: Outline button with emerald border and text, filled emerald on hover
+              className="w-full border-emerald-600 text-emerald-700 hover:bg-emerald-600 hover:text-black transition-all duration-300"
+              onClick={() => onPredict?.(fixture)}
+            >
+              <TrendingUp className="w-4 h-4 mr-2" />
+              Get AI Prediction
+            </Button>
+          )}
+        </div>
+      </div>
     </Card>
   );
 };

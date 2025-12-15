@@ -24,7 +24,7 @@ const FixturesGrid: React.FC<FixturesGridProps> = ({
           <FixtureCard
             key={fixture.id}
             fixture={fixture}
-            onClick={onFixtureClick}
+            onPredict={onFixtureClick} // Updated to onPredict to match FixtureCard props
           />
         ))}
       </div>
@@ -36,7 +36,7 @@ const FixturesGrid: React.FC<FixturesGridProps> = ({
           <h3 className="text-lg font-semibold text-slate-900 mb-2">
             No {selectedTab === 'today' ? 'today\'s' : 'upcoming'} matches
           </h3>
-          <p className="text-slate-600">
+          <p className="text-grey-900">
             {selectedTab === 'today' 
               ? 'Check back tomorrow for today\'s Premier League fixtures.'
               : 'All matches for this period have been completed.'

@@ -24,41 +24,43 @@ const AIAnalysisCard: React.FC<AIAnalysisCardProps> = ({
   } = analysis;
 
   return (
-    <Card className={`${className} bg-slate-50 border-l-4 border-blue-500`}>
-      <CardHeader>
+    // UPDATED: Border color to Emerald
+    <Card className={`${className} bg-white border-l-4 border-emerald-500 shadow-md`}>
+      <CardHeader className="border-b border-slate-100 pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center text-slate-800">
-            <Sparkles className="w-5 h-5 mr-2 text-blue-600" />
+          <CardTitle className="flex items-center text-slate-800 font-heading text-xl">
+            {/* UPDATED: Icon color */}
+            <Sparkles className="w-5 h-5 mr-2 text-emerald-600" />
             AI Match Analysis
           </CardTitle>
-          <div className="text-sm text-slate-600">
-            Generated {formatRelativeTime(generatedAt)}
+          <div className="text-xs font-medium px-2 py-1 bg-slate-100 rounded text-slate-500">
+            {formatRelativeTime(generatedAt)}
           </div>
         </div>
-        <p className="text-sm text-slate-600">
+        <p className="text-xs text-slate-400 uppercase tracking-wide font-medium mt-1">
           Powered by {model}
         </p>
       </CardHeader>
 
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-8 pt-6">
         {/* Main Analysis Content */}
-        <div className="prose prose-sm max-w-none">
+        <div className="prose prose-sm max-w-none text-slate-600">
           {content.split('\n').map((paragraph, index) => {
             if (paragraph.startsWith('## ')) {
               return (
-                <h3 key={index} className="text-lg font-semibold text-slate-900 mb-3 mt-6 first:mt-0">
+                <h3 key={index} className="text-lg font-bold text-slate-900 mb-2 mt-4 font-heading uppercase">
                   {paragraph.replace('## ', '')}
                 </h3>
               );
             } else if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
               return (
-                <h4 key={index} className="font-semibold text-slate-800 mb-2 mt-4">
+                <h4 key={index} className="font-semibold text-emerald-700 mb-1 mt-2">
                   {paragraph.replace(/\*\*/g, '')}
                 </h4>
               );
             } else if (paragraph.trim()) {
               return (
-                <p key={index} className="text-slate-700 mb-3 leading-relaxed">
+                <p key={index} className="mb-2 leading-relaxed">
                   {paragraph}
                 </p>
               );
@@ -67,63 +69,66 @@ const AIAnalysisCard: React.FC<AIAnalysisCardProps> = ({
           })}
         </div>
 
-        {/* Key Insights */}
-        <div>
-          <div className="flex items-center mb-3">
-            <Lightbulb className="w-4 h-4 mr-2 text-yellow-600" />
-            <h4 className="font-semibold text-slate-900">Key Insights</h4>
+        {/* Tactical Sections Grid */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Key Insights */}
+          <div className="bg-yellow-50/50 p-4 rounded-xl border border-yellow-100">
+            <div className="flex items-center mb-3">
+              <Lightbulb className="w-4 h-4 mr-2 text-yellow-600" />
+              <h4 className="font-bold text-slate-900 font-heading uppercase text-sm">Key Insights</h4>
+            </div>
+            <ul className="space-y-2">
+              {keyInsights.map((insight, index) => (
+                <li key={index} className="flex items-start text-sm text-slate-700">
+                  <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full mt-1.5 mr-2 flex-shrink-0" />
+                  {insight}
+                </li>
+              ))}
+            </ul>
           </div>
-          <div className="space-y-2">
-            {keyInsights.map((insight, index) => (
-              <div key={index} className="flex items-start">
-                <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                <p className="text-slate-700 text-sm">{insight}</p>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Tactical Analysis */}
-        <div>
-          <div className="flex items-center mb-3">
-            <Brain className="w-4 h-4 mr-2 text-purple-600" />
-            <h4 className="font-semibold text-slate-900">Tactical Analysis</h4>
-          </div>
-          <div className="bg-white rounded-lg p-4 border border-slate-200">
-            <p className="text-slate-700 text-sm leading-relaxed">{tacticalAnalysis}</p>
+          {/* Tactical Analysis */}
+          <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100">
+            <div className="flex items-center mb-3">
+              <Brain className="w-4 h-4 mr-2 text-indigo-600" />
+              <h4 className="font-bold text-slate-900 font-heading uppercase text-sm">Tactics</h4>
+            </div>
+            <p className="text-sm text-slate-700 leading-relaxed">{tacticalAnalysis}</p>
           </div>
         </div>
 
         {/* Player Recommendations */}
-        <div>
+        <div className="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
           <div className="flex items-center mb-3">
-            <TrendingUp className="w-4 h-4 mr-2 text-green-600" />
-            <h4 className="font-semibold text-slate-900">Player Recommendations</h4>
+            <TrendingUp className="w-4 h-4 mr-2 text-emerald-600" />
+            <h4 className="font-bold text-slate-900 font-heading uppercase text-sm">Players to Watch</h4>
           </div>
-          <div className="space-y-2">
-            {playerRecommendations.map((recommendation, index) => (
-              <div key={index} className="flex items-start">
-                <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                <p className="text-slate-700 text-sm">{recommendation}</p>
+          <div className="grid sm:grid-cols-2 gap-3">
+            {playerRecommendations.map((rec, index) => (
+              <div key={index} className="flex items-center bg-white p-2 rounded border border-emerald-100/50 shadow-sm">
+                 <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-xs mr-3">
+                   {index + 1}
+                 </div>
+                 <span className="text-sm font-medium text-slate-700">{rec}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Risk Factors */}
-        <div>
+        <div className="bg-red-50/50 p-4 rounded-xl border border-red-100">
           <div className="flex items-center mb-3">
             <AlertTriangle className="w-4 h-4 mr-2 text-red-600" />
-            <h4 className="font-semibold text-slate-900">Risk Factors</h4>
+            <h4 className="font-bold text-slate-900 font-heading uppercase text-sm">Risk Assessment</h4>
           </div>
-          <div className="space-y-2">
+          <ul className="space-y-2">
             {riskFactors.map((risk, index) => (
-              <div key={index} className="flex items-start">
-                <div className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                <p className="text-slate-700 text-sm">{risk}</p>
-              </div>
+              <li key={index} className="flex items-start text-sm text-slate-700">
+                <span className="w-1.5 h-1.5 bg-red-400 rounded-full mt-1.5 mr-2 flex-shrink-0" />
+                {risk}
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </CardContent>
     </Card>

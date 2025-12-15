@@ -1,143 +1,42 @@
 @import "tailwindcss";
 
-/* Custom CSS Variables */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a; /* Slate 900 */
+
+  /* FOOTBALL THEME PALETTE */
+  /* Primary: The Pitch (Emerald) */
+  --pitch-primary: #059669; /* Emerald 600 */
+  --pitch-dark: #022c22;    /* Emerald 950 */
+  
+  /* Action: The Ball/Boots (Lime - High Vis) */
+  --pitch-accent: #65a30d;  /* Lime 600 */
+  --pitch-accent-hover: #4d7c0f; /* Lime 700 */
+
+  /* Secondary: The Stadium Night (Slate/Navy) */
+  --stadium-blue: #1e293b; /* Slate 800 */
+  
   --font-inter: var(--font-inter);
   --font-oswald: var(--font-oswald);
 }
 
-/* Theme Configuration */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
   --font-heading: var(--font-oswald);
-  --font-mono: var(--font-inter);
+  
+  /* Semantic Color Mapping */
+  --color-primary: var(--pitch-primary);
+  --color-accent: var(--pitch-accent);
 }
 
-/* Base Styles */
-html {
-  font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-oswald), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  font-weight: 600;
-  line-height: 1.2;
-}
-
-/* Custom Utilities */
 @layer utilities {
-  .font-heading {
-    font-family: var(--font-oswald), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  }
-  
-  .font-body {
-    font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  .bg-pitch-gradient {
+    background: linear-gradient(135deg, #0f172a 0%, #064e3b 100%);
   }
 
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  .active\:scale-98:active {
-    transform: scale(0.98);
-  }
-
-  .line-clamp-2 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-  }
-
-  .line-clamp-3 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-  }
-}
-
-/* Custom Animations */
-@keyframes shimmer {
-  0% {
-    background-position: -200px 0;
-  }
-  100% {
-    background-position: calc(200px + 100%) 0;
-  }
-}
-
-.animate-shimmer {
-  animation: shimmer 1.5s ease-in-out infinite;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200px 100%;
-}
-
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* Focus Styles */
-.focus-visible {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-}
-
-/* Print Styles */
-@media print {
-  .no-print {
-    display: none !important;
-  }
-  
-  .print-break-inside-avoid {
-    break-inside: avoid;
-  }
-}
-
-/* High Contrast Mode */
-@media (prefers-contrast: high) {
-  .bg-slate-100 {
-    background-color: #ffffff;
-  }
-  
-  .text-slate-600 {
-    color: #000000;
-  }
-  
-  .border-slate-200 {
-    border-color: #000000;
-  }
-}
-
-/* Reduced Motion */
-@media (prefers-reduced-motion: reduce) {
-  .animate-spin,
-  .animate-pulse,
-  .animate-shimmer {
-    animation: none;
-  }
-  
-  .transition-all,
-  .transition-colors,
-  .transition-transform {
-    transition: none;
+  .text-pitch-accent {
+    color: var(--pitch-accent);
   }
 }

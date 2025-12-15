@@ -1,3 +1,4 @@
+// src/infrastructure/api.ts
 import { 
   IPredictionService, 
   IAIService, 
@@ -31,6 +32,7 @@ export class PredictionAPI implements IPredictionService {
     } catch (error) {
       console.error('Prediction API error:', error);
       // Fallback to mock service
+      // Note: We use dynamic import to avoid circular dependency issues
       const MockPredictionService = (await import('@/application/services')).MockPredictionService;
       const mockService = new MockPredictionService();
       return mockService.getMatchPrediction(homeTeamName, awayTeamName);
@@ -52,7 +54,6 @@ export class PredictionAPI implements IPredictionService {
       return await response.json();
     } catch (error) {
       console.error('History API error:', error);
-      // Fallback to mock service
       const MockPredictionService = (await import('@/application/services')).MockPredictionService;
       const mockService = new MockPredictionService();
       return mockService.getPredictionHistory();
@@ -81,7 +82,6 @@ export class AIAnalysisAPI implements IAIService {
       return await response.json();
     } catch (error) {
       console.error('AI Analysis API error:', error);
-      // Fallback to mock service
       const MockAIService = (await import('@/application/services')).MockAIService;
       const mockService = new MockAIService();
       return mockService.generateMatchAnalysis(matchId);
@@ -103,7 +103,6 @@ export class AIAnalysisAPI implements IAIService {
       return await response.json();
     } catch (error) {
       console.error('AI Team Insights API error:', error);
-      // Fallback to mock service
       const MockAIService = (await import('@/application/services')).MockAIService;
       const mockService = new MockAIService();
       return mockService.getTeamInsights(teamId);
@@ -130,7 +129,6 @@ export class NewsAPI implements INewsService {
       return this.transformNewsResponse(data.articles);
     } catch (error) {
       console.error('News API error:', error);
-      // Fallback to mock service
       const MockNewsService = (await import('@/application/services')).MockNewsService;
       const mockService = new MockNewsService();
       return mockService.getTeamNews(teamIds);
@@ -151,7 +149,6 @@ export class NewsAPI implements INewsService {
       return this.transformNewsResponse(data.articles);
     } catch (error) {
       console.error('News API error:', error);
-      // Fallback to mock service
       const MockNewsService = (await import('@/application/services')).MockNewsService;
       const mockService = new MockNewsService();
       return mockService.getLatestNews();
@@ -159,6 +156,7 @@ export class NewsAPI implements INewsService {
   }
   
   private transformNewsResponse(articles: any[]) {
+    if (!articles) return [];
     return articles.map((article, index) => ({
       id: `news-${Date.now()}-${index}`,
       title: article.title,
@@ -224,7 +222,6 @@ export class PredictionHistoryAPI implements IPredictionHistoryService {
       return await response.json();
     } catch (error) {
       console.error('Stats API error:', error);
-      // Fallback to mock service
       const MockPredictionHistoryService = (await import('@/application/services')).MockPredictionHistoryService;
       const mockService = new MockPredictionHistoryService();
       return mockService.getAccuracyStats();

@@ -1,9 +1,49 @@
+// src/lib/data/fixtures.ts
+
 // Enhanced Premier League Fixtures Data using Multiple Official Sources
 import { realFixtureService } from './realFixtureData';
 import { officialPremierLeagueService } from './officialPremierLeague';
 
+// --- Type Definitions ---
+
+export interface Team {
+  name: string;
+  shortName: string;
+  logo: string;
+  color: string;
+  score?: number | null;
+  scorers?: string[];
+}
+
+export interface Fixture {
+  id: string;
+  date: string;
+  status: 'SCHEDULED' | 'LIVE' | 'FINISHED' | 'PAUSED' | 'completed' | 'scheduled'; // Combined types for compatibility
+  minute?: number;
+  homeTeam: Team;
+  awayTeam: Team;
+  venue: string;
+  matchweek: number;
+  actualDate: string;
+  actualTime?: string;
+  hasResult?: boolean;
+  result?: {
+    home: number;
+    away: number;
+    halfTime?: {
+      home: number;
+      away: number;
+    } | null;
+  } | null;
+  broadcast?: string;
+  dataSource: 'official-pl' | 'openfootball' | 'live-api';
+}
+
+// --- Data & Mappings ---
+
 // Enhanced team information mapping
-const TEAM_INFO = {
+// Note: We can add 'id' here later to map to crests.football-data.org/{id}.svg
+const TEAM_INFO: Record<string, { shortName: string; venue: string; color: string }> = {
   'Liverpool FC': { shortName: 'LIV', venue: 'Anfield', color: 'from-red-400 to-red-600' },
   'AFC Bournemouth': { shortName: 'BOU', venue: 'Vitality Stadium', color: 'from-red-500 to-yellow-500' },
   'Aston Villa FC': { shortName: 'AVL', venue: 'Villa Park', color: 'from-yellow-400 to-purple-500' },
@@ -27,7 +67,7 @@ const TEAM_INFO = {
 };
 
 // Official team name mapping for Premier League data
-const OFFICIAL_TEAM_MAPPING = {
+const OFFICIAL_TEAM_MAPPING: Record<string, string> = {
   'Liverpool': 'Liverpool FC',
   'Bournemouth': 'AFC Bournemouth',
   'Aston Villa': 'Aston Villa FC',
@@ -50,13 +90,15 @@ const OFFICIAL_TEAM_MAPPING = {
   'Everton': 'Everton FC'
 };
 
+// --- Helper Functions ---
+
 // Convert official fixture to website format
-const convertOfficialFixture = (fixture: any, index: number) => {
-  const homeTeamName = OFFICIAL_TEAM_MAPPING[fixture.homeTeam as keyof typeof OFFICIAL_TEAM_MAPPING] || fixture.homeTeam;
-  const awayTeamName = OFFICIAL_TEAM_MAPPING[fixture.awayTeam as keyof typeof OFFICIAL_TEAM_MAPPING] || fixture.awayTeam;
+const convertOfficialFixture = (fixture: any, index: number): Fixture => {
+  const homeTeamName = OFFICIAL_TEAM_MAPPING[fixture.homeTeam] || fixture.homeTeam;
+  const awayTeamName = OFFICIAL_TEAM_MAPPING[fixture.awayTeam] || fixture.awayTeam;
   
-  const homeTeamInfo = TEAM_INFO[homeTeamName as keyof typeof TEAM_INFO];
-  const awayTeamInfo = TEAM_INFO[awayTeamName as keyof typeof TEAM_INFO];
+  const homeTeamInfo = TEAM_INFO[homeTeamName] || TEAM_INFO[fixture.homeTeam];
+  const awayTeamInfo = TEAM_INFO[awayTeamName] || TEAM_INFO[fixture.awayTeam];
   
   return {
     id: `official-${fixture.date}-${fixture.homeTeam}-${fixture.awayTeam}`,
@@ -65,13 +107,15 @@ const convertOfficialFixture = (fixture: any, index: number) => {
       name: homeTeamName,
       shortName: homeTeamInfo?.shortName || fixture.homeTeam.substring(0, 3).toUpperCase(),
       logo: `/api/placeholder/60/60?text=${homeTeamInfo?.shortName || fixture.homeTeam.substring(0, 2)}`,
-      color: homeTeamInfo?.color || 'from-gray-400 to-gray-600'
+      color: homeTeamInfo?.color || 'from-gray-400 to-gray-600',
+      score: fixture.score?.home ?? null
     },
     awayTeam: {
       name: awayTeamName,
       shortName: awayTeamInfo?.shortName || fixture.awayTeam.substring(0, 3).toUpperCase(),
       logo: `/api/placeholder/60/60?text=${awayTeamInfo?.shortName || fixture.awayTeam.substring(0, 2)}`,
-      color: awayTeamInfo?.color || 'from-gray-400 to-gray-600'
+      color: awayTeamInfo?.color || 'from-gray-400 to-gray-600',
+      score: fixture.score?.away ?? null
     },
     venue: fixture.venue || homeTeamInfo?.venue || 'TBD',
     status: fixture.status === 'completed' ? 'completed' : 'scheduled',
@@ -84,16 +128,16 @@ const convertOfficialFixture = (fixture: any, index: number) => {
       away: fixture.score.away
     } : null,
     broadcast: fixture.broadcast,
-    dataSource: 'official-pl' as const
+    dataSource: 'official-pl'
   };
 };
 
 // Get enhanced fixtures combining official and OpenFootball data
-const getEnhancedFixtures = (limit: number = 15) => {
+const getEnhancedFixtures = (limit: number = 15): Fixture[] => {
   const officialFixtures = officialPremierLeagueService.getUpcomingOfficialFixtures(limit);
   const openFootballFixtures = realFixtureService.getUpcomingFixtures(limit);
   
-  // Convert official fixtures to website format
+  // Convert official fixtures
   const convertedOfficial = officialFixtures.map((fixture, index) => 
     convertOfficialFixture({
       ...fixture,
@@ -102,22 +146,24 @@ const getEnhancedFixtures = (limit: number = 15) => {
   );
   
   // Convert OpenFootball fixtures
-  const convertedOpenFootball = openFootballFixtures.map((fixture, index) => ({
+  const convertedOpenFootball: Fixture[] = openFootballFixtures.map((fixture, index) => ({
     id: `openfootball-${fixture.round}-${fixture.team1}-${fixture.team2}`,
     date: `${fixture.date}T${fixture.time}:00Z`,
     homeTeam: {
       name: fixture.team1,
-      shortName: TEAM_INFO[fixture.team1 as keyof typeof TEAM_INFO]?.shortName || fixture.team1.substring(0, 3).toUpperCase(),
-      logo: `/api/placeholder/60/60?text=${TEAM_INFO[fixture.team1 as keyof typeof TEAM_INFO]?.shortName || fixture.team1.substring(0, 2)}`,
-      color: TEAM_INFO[fixture.team1 as keyof typeof TEAM_INFO]?.color || 'from-gray-400 to-gray-600'
+      shortName: TEAM_INFO[fixture.team1]?.shortName || fixture.team1.substring(0, 3).toUpperCase(),
+      logo: `/api/placeholder/60/60?text=${TEAM_INFO[fixture.team1]?.shortName || fixture.team1.substring(0, 2)}`,
+      color: TEAM_INFO[fixture.team1]?.color || 'from-gray-400 to-gray-600',
+      score: fixture.score.ft?.[0] ?? null
     },
     awayTeam: {
       name: fixture.team2,
-      shortName: TEAM_INFO[fixture.team2 as keyof typeof TEAM_INFO]?.shortName || fixture.team2.substring(0, 3).toUpperCase(),
-      logo: `/api/placeholder/60/60?text=${TEAM_INFO[fixture.team2 as keyof typeof TEAM_INFO]?.shortName || fixture.team2.substring(0, 2)}`,
-      color: TEAM_INFO[fixture.team2 as keyof typeof TEAM_INFO]?.color || 'from-gray-400 to-gray-600'
+      shortName: TEAM_INFO[fixture.team2]?.shortName || fixture.team2.substring(0, 3).toUpperCase(),
+      logo: `/api/placeholder/60/60?text=${TEAM_INFO[fixture.team2]?.shortName || fixture.team2.substring(0, 2)}`,
+      color: TEAM_INFO[fixture.team2]?.color || 'from-gray-400 to-gray-600',
+      score: fixture.score.ft?.[1] ?? null
     },
-    venue: TEAM_INFO[fixture.team1 as keyof typeof TEAM_INFO]?.venue || 'TBD',
+    venue: TEAM_INFO[fixture.team1]?.venue || 'TBD',
     status: fixture.score.ft && fixture.score.ft.length > 0 ? 'completed' : 'scheduled',
     matchweek: parseInt(fixture.round.replace('Matchday ', '')),
     actualDate: fixture.date,
@@ -131,13 +177,13 @@ const getEnhancedFixtures = (limit: number = 15) => {
         away: fixture.score.ht[1]
       } : null
     } : null,
-    dataSource: 'openfootball' as const
+    dataSource: 'openfootball'
   }));
   
   // Combine and prioritize official data
   const combined = [...convertedOfficial, ...convertedOpenFootball];
   
-  // Remove duplicates and sort by date
+  // Remove duplicates
   const unique = combined.filter((fixture, index, self) => 
     index === self.findIndex(f => 
       f.homeTeam.name === fixture.homeTeam.name && 
@@ -151,10 +197,10 @@ const getEnhancedFixtures = (limit: number = 15) => {
     .slice(0, limit);
 };
 
-// Enhanced fixtures with multiple data sources
+// --- Exports ---
+
 export const premierLeagueFixtures = getEnhancedFixtures(15);
 
-// Multi-source data information
 export const DATA_SOURCES = {
   official: {
     name: "Official Premier League Website",
@@ -184,12 +230,10 @@ export const DATA_SOURCE = {
   sources: Object.keys(DATA_SOURCES).length
 };
 
-// Get all current teams
 export const getCurrentTeams = () => {
   return realFixtureService.getCurrentTeams();
 };
 
-// Enhanced helper functions
 export const getUpcomingFixtures = (limit: number = 8) => {
   const now = new Date();
   return premierLeagueFixtures
@@ -218,90 +262,45 @@ export const getMatchWeekFixtures = (matchWeek: number) => {
   return getEnhancedFixtures().filter(fixture => fixture.matchweek === matchWeek);
 };
 
-// Get official fixtures only
 export const getOfficialFixtures = (limit: number = 10) => {
   return officialPremierLeagueService.getUpcomingOfficialFixtures(limit);
 };
 
-// Get recent official results
 export const getRecentResults = (limit: number = 5) => {
   return officialPremierLeagueService.getRecentResults(limit);
 };
 
-// Get today's fixtures from official source
 export const getTodayFixtures = () => {
   return officialPremierLeagueService.getTodayFixtures();
 };
 
-// Get enhanced fixture analysis
 export const getFixtureAnalysis = (homeTeam: string, awayTeam: string) => {
   return realFixtureService.getFixtureAnalysis(homeTeam, awayTeam);
 };
 
-// Get team statistics
 export const getTeamStats = (teamName: string) => {
   return realFixtureService.calculateTeamStats(teamName);
 };
 
-// Get head-to-head statistics
 export const getHeadToHead = (team1: string, team2: string) => {
   return realFixtureService.getHeadToHead(team1, team2);
 };
 
-// Get recent form
 export const getRecentForm = (teamName: string, matches: number = 5) => {
   return realFixtureService.getRecentForm(teamName, matches);
 };
 
-// Get match statistics from official results
 export const getMatchStatistics = () => {
   return officialPremierLeagueService.getMatchStatistics();
 };
 
-// Get data source summary
 export const getDataSourceSummary = () => {
   return officialPremierLeagueService.getCombinedDataSources();
 };
 
-// Fixture type definition
-export type Fixture = {
-  id: string;
-  date: string;
-  homeTeam: {
-    name: string;
-    shortName: string;
-    logo: string;
-    color: string;
-  };
-  awayTeam: {
-    name: string;
-    shortName: string;
-    logo: string;
-    color: string;
-  };
-  venue: string;
-  status: string;
-  matchweek: number;
-  actualDate: string;
-  actualTime?: string;
-  hasResult?: boolean;
-  result?: {
-    home: number;
-    away: number;
-    halfTime?: {
-      home: number;
-      away: number;
-    } | null;
-  } | null;
-  broadcast?: string;
-  dataSource: 'official-pl' | 'openfootball';
-};
-
-// Utility function to get gradient from color
 export const getGradientFromColor = (color: string): string => {
   if (color.startsWith('from-')) {
     return color;
   }
-  // Default gradient if color doesn't start with 'from-'
   return 'from-blue-400 to-blue-600';
 };

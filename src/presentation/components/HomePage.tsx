@@ -37,21 +37,13 @@ const HomePage: React.FC = () => {
   }, []);
 
   const handleFixtureSelect = async (fixture: Fixture) => {
+    // 1. SCROLL TO TOP - This fixes the "shows nothing" issue
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     setSelectedFixture(fixture);
     setIsPredicting(true);
     try {
       await loadMatchPrediction(fixture.homeTeam.name, fixture.awayTeam.name);
-    } finally {
-      setIsPredicting(false);
-    }
-  };
-
-  const handlePrediction = async () => {
-    if (!selectedFixture) return;
-    
-    setIsPredicting(true);
-    try {
-      await loadMatchPrediction(selectedFixture.homeTeam.name, selectedFixture.awayTeam.name);
     } finally {
       setIsPredicting(false);
     }
@@ -67,7 +59,7 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-slate-50">
       <Header />
       
       <HeroSection onFixtureSelect={handleFixtureSelect} />

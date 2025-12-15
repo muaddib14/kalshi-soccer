@@ -14,37 +14,25 @@ const FixturesTabs: React.FC<FixturesTabsProps> = ({
   todayFixturesCount 
 }) => {
   return (
-    <div className="flex items-center space-x-1 mb-6">
-      <button
-        onClick={() => onTabChange('upcoming')}
-        className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-          selectedTab === 'upcoming'
-            ? 'bg-blue-600 text-white'
-            : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
-        }`}
-      >
-        Upcoming Matches
-      </button>
-      <button
-        onClick={() => onTabChange('today')}
-        className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-          selectedTab === 'today'
-            ? 'bg-blue-600 text-white'
-            : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
-        }`}
-      >
-        Today {todayFixturesCount > 0 && `(${todayFixturesCount})`}
-      </button>
-      <button
-        onClick={() => onTabChange('results')}
-        className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-          selectedTab === 'results'
-            ? 'bg-blue-600 text-white'
-            : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
-        }`}
-      >
-        Recent Results
-      </button>
+    <div className="flex items-center space-x-2 mb-6 bg-slate-100/50 p-1 rounded-xl w-fit">
+      {[
+        { id: 'upcoming', label: 'Upcoming Matches' },
+        { id: 'today', label: `Today ${todayFixturesCount > 0 ? `(${todayFixturesCount})` : ''}` },
+        { id: 'results', label: 'Recent Results' }
+      ].map((tab) => (
+        <button
+          key={tab.id}
+          onClick={() => onTabChange(tab.id as any)}
+          className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
+            selectedTab === tab.id
+              // UPDATED: Active state is now Emerald with shadow
+              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-900/10'
+              : 'text-slate-600 hover:bg-white hover:text-emerald-700'
+          }`}
+        >
+          {tab.label}
+        </button>
+      ))}
     </div>
   );
 };

@@ -12,7 +12,7 @@ const FixturesHeader: React.FC = () => {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-2xl font-bold text-slate-900 font-heading">Premier League Fixtures</h2>
-          <p className="text-slate-600">Official data from Premier League + OpenFootball database</p>
+          <p className="text-grey-900">Official data from Premier League + OpenFootball database</p>
         </div>
         <div className="flex items-center space-x-2">
           <div className="px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium flex items-center">
