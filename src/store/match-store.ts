@@ -10,12 +10,14 @@ import {
   IPredictionService,
   IAIService,
   INewsService,
-  IPredictionHistoryService,
-  MockPredictionService,
-  MockAIService,
-  MockNewsService,
-  MockPredictionHistoryService
+  IPredictionHistoryService
 } from '@/application/services';
+import {
+  PredictionAPI,
+  AIAnalysisAPI,
+  NewsAPI,
+  PredictionHistoryAPI
+} from '@/infrastructure/api';
 
 // Store Types
 interface MatchState extends LoadingState {
@@ -47,12 +49,25 @@ let newsService: INewsService;
 let historyService: IPredictionHistoryService;
 
 const initializeServices = () => {
-  // In production, these would be real API services
-  // For now, using mock services
-  predictionService = new MockPredictionService();
-  aiService = new MockAIService();
-  newsService = new MockNewsService();
-  historyService = new MockPredictionHistoryService();
+  // We initialize the REAL API services here.
+  // Note: If the backend is unreachable, these classes have internal try/catch blocks
+  // that will automatically fallback to the Mock services or OpenRouter (for AI).
+  
+  if (!predictionService) {
+    predictionService = new PredictionAPI();
+  }
+  
+  if (!aiService) {
+    aiService = new AIAnalysisAPI();
+  }
+  
+  if (!newsService) {
+    newsService = new NewsAPI();
+  }
+  
+  if (!historyService) {
+    historyService = new PredictionHistoryAPI();
+  }
 };
 
 // Zustand Store Implementation
@@ -164,7 +179,7 @@ export const useMatchStore = create<MatchState>((set, get) => ({
   }
 }));
 
-// Helper functions for generating match data
+// Helper functions for generating match data (Simulating backend logic for prompt generation)
 const generateFormData = (teamName: string): string => {
   const forms = ['strong recent form with 4 wins in last 5 matches', 'mixed results with 2 wins in last 5', 'struggling form with only 1 win in last 5', 'excellent form with 5 consecutive wins'];
   return forms[Math.floor(Math.random() * forms.length)];

@@ -179,5 +179,6 @@ export function sortByDate<T extends { date: Date | string }>(
 
 // Create placeholder image URL
 export function createPlaceholderImage(text: string, width: number = 300, height: number = 200): string {
-  return `/api/placeholder/${width}/${height}?text=${encodeURIComponent(text)}`;
+  // Use a public placeholder service instead of local API
+  return `https://picsum.photos/${width}/${height}?random=${Math.floor(Math.random() * 1000)}`;
 }
