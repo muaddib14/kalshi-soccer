@@ -64,7 +64,7 @@ export function getConfidenceColor(confidence: 'low' | 'medium' | 'high'): strin
 }
 
 // Calculate result color
-export function getResultColor(result: 'home_win' | 'away_win' | 'draw'): string {
+export function getResultColor(result: 'home_win' | 'away_win' | 'draw' | 'pending'): string {
   switch (result) {
     case 'home_win':
       return 'text-green-600 bg-green-50';
@@ -72,6 +72,8 @@ export function getResultColor(result: 'home_win' | 'away_win' | 'draw'): string
       return 'text-blue-600 bg-blue-50';
     case 'draw':
       return 'text-yellow-600 bg-yellow-50';
+    case 'pending':
+      return 'text-gray-600 bg-gray-50';
     default:
       return 'text-gray-600 bg-gray-50';
   }

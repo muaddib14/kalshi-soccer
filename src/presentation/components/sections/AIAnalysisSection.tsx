@@ -7,7 +7,7 @@ import { LoadingSpinner, AIAnalysisSkeleton } from '@/presentation/components/ui
 import { Search } from 'lucide-react';
 
 interface AIAnalysisSectionProps {
-  analysis?: AIAnalysis;
+  analysis?: AIAnalysis | null;
   isLoading: boolean;
 }
 

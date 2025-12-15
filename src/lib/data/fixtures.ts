@@ -199,7 +199,7 @@ export const getUpcomingFixtures = (limit: number = 8) => {
 };
 
 export const getFixturesByDate = (date: string) => {
-  return premierLeagueFixtures.filter(fixture => 
+  return getEnhancedFixtures().filter(fixture => 
     fixture.actualDate === date
   );
 };
@@ -215,7 +215,7 @@ export const formatFixtureDate = (dateString: string) => {
 };
 
 export const getMatchWeekFixtures = (matchWeek: number) => {
-  return premierLeagueFixtures.filter(fixture => fixture.matchweek === matchWeek);
+  return getEnhancedFixtures().filter(fixture => fixture.matchweek === matchWeek);
 };
 
 // Get official fixtures only
@@ -261,4 +261,47 @@ export const getMatchStatistics = () => {
 // Get data source summary
 export const getDataSourceSummary = () => {
   return officialPremierLeagueService.getCombinedDataSources();
+};
+
+// Fixture type definition
+export type Fixture = {
+  id: string;
+  date: string;
+  homeTeam: {
+    name: string;
+    shortName: string;
+    logo: string;
+    color: string;
+  };
+  awayTeam: {
+    name: string;
+    shortName: string;
+    logo: string;
+    color: string;
+  };
+  venue: string;
+  status: string;
+  matchweek: number;
+  actualDate: string;
+  actualTime?: string;
+  hasResult?: boolean;
+  result?: {
+    home: number;
+    away: number;
+    halfTime?: {
+      home: number;
+      away: number;
+    } | null;
+  } | null;
+  broadcast?: string;
+  dataSource: 'official-pl' | 'openfootball';
+};
+
+// Utility function to get gradient from color
+export const getGradientFromColor = (color: string): string => {
+  if (color.startsWith('from-')) {
+    return color;
+  }
+  // Default gradient if color doesn't start with 'from-'
+  return 'from-blue-400 to-blue-600';
 };

@@ -134,9 +134,9 @@ ${matchData.homeAdvantage ? 'Home advantage plays a crucial role in this fixture
       const content = data.choices[0]?.message?.content || '';
       
       return content.split('\n')
-        .filter(line => line.trim().startsWith('•') || line.trim().startsWith('-'))
-        .map(line => line.replace(/[•-]\s*/, '').trim())
-        .filter(insight => insight.length > 0)
+        .filter((line: string) => line.trim().startsWith('•') || line.trim().startsWith('-'))
+        .map((line: string) => line.replace(/[•-]\s*/, '').trim())
+        .filter((insight: string) => insight.length > 0)
         .slice(0, 4);
         
     } catch (error) {

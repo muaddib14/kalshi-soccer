@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
-import { NewsItem } from '@/lib/types';
+import { NewsArticle } from '@/lib/types';
 import NewsCard from '@/presentation/components/features/news/NewsCard';
 import { LoadingSpinner, NewsSkeleton } from '@/presentation/components/ui/Loading';
 
 interface NewsSectionProps {
-  news: NewsItem[];
+  news: NewsArticle[];
   isLoading: boolean;
 }
 

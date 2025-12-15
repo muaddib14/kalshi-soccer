@@ -3,15 +3,11 @@ import { PredictionHistory } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/presentation/components/ui/Card';
 import { Activity, CheckCircle, XCircle, Minus, TrendingUp } from 'lucide-react';
 import { getResultColor, formatDate } from '@/lib/utils/helpers';
+import { AccuracyStats } from '@/lib/types';
 
 interface PredictionHistoryCardProps {
   history: PredictionHistory[];
-  accuracyStats?: {
-    totalPredictions: number;
-    accuracyRate: number;
-    recentAccuracy: number;
-    bestPerformingAlgorithm: string;
-  };
+  accuracyStats?: AccuracyStats | null;
   className?: string;
 }
 

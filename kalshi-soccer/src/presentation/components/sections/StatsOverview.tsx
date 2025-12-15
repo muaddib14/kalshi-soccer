@@ -5,7 +5,7 @@ import { AccuracyStats } from '@/lib/types';
 import { TrendingUp, Search } from 'lucide-react';
 
 interface StatsOverviewProps {
-  accuracyStats?: AccuracyStats;
+  accuracyStats?: AccuracyStats | null;
 }
 
 const StatsOverview: React.FC<StatsOverviewProps> = ({ accuracyStats }) => {

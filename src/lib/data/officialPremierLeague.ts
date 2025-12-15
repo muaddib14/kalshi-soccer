@@ -3,7 +3,6 @@
  * Combines official Premier League website data with OpenFootball database
  */
 
-import premierLeagueFixtures from './fixtures';
 import { realFixtureService } from './realFixtureData';
 
 // Official Premier League fixtures from website scraping
@@ -221,13 +220,13 @@ class OfficialPremierLeagueService {
       .map((match, index) => ({
         id: `official-pl-${match.date}-${index}`,
         date: match.date,
-        time: match.kickoff,
+        time: match.kickoff || undefined,
         homeTeam: match.homeTeam,
         awayTeam: match.awayTeam,
         venue: match.venue,
-        status: match.status,
+        status: match.status as 'scheduled' | 'live' | 'completed',
         score: match.score || undefined,
-        broadcast: match.broadcast,
+        broadcast: (match as any).broadcast || undefined,
         dataSource: 'official-pl' as const,
         matchweek: 16
       }));
@@ -251,7 +250,7 @@ class OfficialPremierLeagueService {
         homeTeam: match.homeTeam,
         awayTeam: match.awayTeam,
         venue: match.venue,
-        status: match.status,
+        status: match.status as 'scheduled' | 'live' | 'completed',
         dataSource: 'official-pl' as const,
         matchweek: match.date.includes('2025-12-20') || match.date.includes('2025-12-21') || match.date.includes('2025-12-22') ? 17 : 16
       }));
@@ -272,13 +271,13 @@ class OfficialPremierLeagueService {
     return todayMatches.map((match, index) => ({
       id: `official-pl-today-${index}`,
       date: match.date,
-      time: match.kickoff,
+      time: match.kickoff || undefined,
       homeTeam: match.homeTeam,
       awayTeam: match.awayTeam,
       venue: match.venue,
-      status: match.status,
-      score: match.score || undefined,
-      broadcast: match.broadcast,
+      status: match.status as 'scheduled' | 'live' | 'completed',
+      score: (match as any).score || undefined,
+      broadcast: (match as any).broadcast || undefined,
       dataSource: 'official-pl' as const,
       matchweek: 16
     }));
@@ -304,13 +303,13 @@ class OfficialPremierLeagueService {
     return {
       id: `official-pl-${fixture.date}-${fixture.homeTeam}-${fixture.awayTeam}`,
       date: fixture.date,
-      time: fixture.kickoff,
+      time: fixture.kickoff || undefined,
       homeTeam: fixture.homeTeam,
       awayTeam: fixture.awayTeam,
       venue: fixture.venue,
-      status: fixture.status,
-      score: fixture.score || undefined,
-      broadcast: fixture.broadcast,
+      status: fixture.status as 'scheduled' | 'live' | 'completed',
+      score: (fixture as any).score || undefined,
+      broadcast: (fixture as any).broadcast || undefined,
       dataSource: 'official-pl',
       matchweek: 16
     };
@@ -321,14 +320,14 @@ class OfficialPremierLeagueService {
    */
   getEnhancedFixtures(limit: number = 15): Array<OfficialFixture & { enhanced: boolean }> {
     const officialFixtures = this.getUpcomingOfficialFixtures(limit);
-    const openFootballFixtures = premierLeagueFixtures.slice(0, limit);
+    const openFootballFixtures = realFixtureService.getUpcomingFixtures(limit);
 
     // Combine and enhance fixtures
     const enhanced = officialFixtures.map(official => {
       // Try to find corresponding OpenFootball fixture
       const openFootballMatch = openFootballFixtures.find(of => 
-        (of.homeTeam.name === official.homeTeam && of.awayTeam.name === official.awayTeam) ||
-        (of.homeTeam.name === official.awayTeam && of.awayTeam.name === official.homeTeam)
+        (of.team1 === official.homeTeam && of.team2 === official.awayTeam) ||
+        (of.team1 === official.awayTeam && of.team2 === official.homeTeam)
       );
 
       return {

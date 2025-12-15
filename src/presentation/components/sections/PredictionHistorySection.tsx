@@ -6,7 +6,7 @@ import PredictionHistoryCard from '@/presentation/components/features/history/Pr
 
 interface PredictionHistorySectionProps {
   history: PredictionHistory[];
-  accuracyStats?: AccuracyStats;
+  accuracyStats?: AccuracyStats | null;
 }
 
 const PredictionHistorySection: React.FC<PredictionHistorySectionProps> = ({ 

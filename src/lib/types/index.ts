@@ -34,6 +34,12 @@ export interface MatchPrediction {
   confidence: 'low' | 'medium' | 'high';
   algorithm: string;
   lastUpdated: Date;
+  realDataAnalysis?: {
+    homeStats: any;
+    awayStats: any;
+    headToHead: any;
+    recentForm?: any;
+  };
 }
 
 export interface AIAnalysis {
@@ -79,12 +85,11 @@ export interface LoadingState {
   error?: string | null;
 }
 
-export interface MatchStats {
-  possession: number;
-  shots: number;
-  shotsOnTarget: number;
-  corners: number;
-  fouls: number;
-  yellowCards: number;
-  redCards: number;
+export interface AccuracyStats {
+  totalPredictions: number;
+  accuracyRate: number;
+  recentAccuracy: number;
+  bestPerformingAlgorithm: string;
 }
+
+export { type Fixture, formatFixtureDate, getGradientFromColor } from '../data/fixtures';

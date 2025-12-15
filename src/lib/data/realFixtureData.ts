@@ -10,7 +10,7 @@ import premierLeague2023 from '../../data/premier-league-2022-23.json';
 export interface RealFixture {
   round: string;
   date: string;
-  time: string;
+  time?: string;
   team1: string;
   team2: string;
   score: {

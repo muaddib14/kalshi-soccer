@@ -7,7 +7,7 @@ export interface IPredictionService {
 }
 
 export interface IAIService {
-  generateMatchAnalysis(matchId: string): Promise<AIAnalysis>;
+  generateMatchAnalysis(matchId: string, matchData?: any): Promise<AIAnalysis>;
   getTeamInsights(teamId: string): Promise<string[]>;
 }
 

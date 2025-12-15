@@ -34,7 +34,7 @@ interface MatchState extends LoadingState {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   loadMatchPrediction: (homeTeam: string, awayTeam: string) => Promise<void>;
-  loadAIAnalysis: (matchId: string) => Promise<void>;
+  loadAIAnalysis: (matchId: string, matchData?: any) => Promise<void>;
   loadPredictionHistory: () => Promise<void>;
   loadLatestNews: () => Promise<void>;
   loadAccuracyStats: () => Promise<void>;

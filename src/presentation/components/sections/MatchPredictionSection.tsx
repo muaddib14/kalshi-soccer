@@ -8,7 +8,7 @@ import { LoadingSpinner, MatchPredictionSkeleton } from '@/presentation/componen
 import { RefreshCw, TrendingUp } from 'lucide-react';
 
 interface MatchPredictionSectionProps {
-  prediction?: MatchPrediction;
+  prediction?: MatchPrediction | null;
   isLoading: boolean;
   selectedFixture?: any;
   onRefresh: () => void;

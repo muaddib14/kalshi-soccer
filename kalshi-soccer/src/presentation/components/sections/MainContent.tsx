@@ -6,14 +6,14 @@ import AIAnalysisSection from './AIAnalysisSection';
 import PredictionHistorySection from './PredictionHistorySection';
 import NewsSection from './NewsSection';
 import ErrorMessage from '@/presentation/components/ui/ErrorMessage';
-import { MatchPrediction, AIAnalysis, PredictionHistory, AccuracyStats, NewsItem } from '@/lib/types';
+import { MatchPrediction, AIAnalysis, PredictionHistory, AccuracyStats, NewsArticle } from '@/lib/types';
 
 interface MainContentProps {
-  currentPrediction?: MatchPrediction;
-  aiAnalysis?: AIAnalysis;
-  predictionHistory: PredictionHistory;
-  latestNews: NewsItem[];
-  accuracyStats?: AccuracyStats;
+  currentPrediction?: MatchPrediction | null;
+  aiAnalysis?: AIAnalysis | null;
+  predictionHistory: PredictionHistory[];
+  latestNews: NewsArticle[];
+  accuracyStats?: AccuracyStats | null;
   isLoading: boolean;
   selectedFixture?: any;
   onRefresh: () => void;
