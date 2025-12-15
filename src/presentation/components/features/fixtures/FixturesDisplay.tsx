@@ -45,7 +45,7 @@ const FixturesDisplay: React.FC<FixturesDisplayProps> = ({
             color: 'from-red-400 to-red-600'
           },
           venue: fixture.venue,
-          status: fixture.status,
+          status: fixture.status.toUpperCase() as Fixture['status'], // Normalize status to uppercase
           matchweek: 16,
           actualDate: fixture.date,
           actualTime: fixture.time,
