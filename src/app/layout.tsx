@@ -1,18 +1,17 @@
-import type { Metadata } from "next";
-import { Inter, Oswald } from "next/font/google";
+// import { Inter, Oswald } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
+// const inter = Inter({
+//   variable: "--font-inter",
+//   subsets: ["latin"],
+//   display: "swap",
+// });
 
-const oswald = Oswald({
-  variable: "--font-oswald",
-  subsets: ["latin"],
-  display: "swap",
-});
+// const oswald = Oswald({
+//   variable: "--font-oswald",
+//   subsets: ["latin"],
+//   display: "swap",
+// });
 
 export const metadata: Metadata = {
   title: "Kalshi Soccer - AI-Powered Football Betting Predictions",
@@ -61,7 +60,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${inter.variable} ${oswald.variable} font-sans antialiased bg-slate-100`}
+        className="font-sans antialiased bg-slate-100"
       >
         {children}
       </body>
