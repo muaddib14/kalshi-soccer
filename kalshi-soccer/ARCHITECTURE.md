@@ -175,22 +175,15 @@ src/presentation/components/
 - **New components**: 15 focused components
 - **Average component size**: ~60 lines
 
-## Git Commit
-- **Commit**: `af0daa4`
-- **Message**: "Refactor to clean architecture and SRP - Break down bloated components into smaller, focused ones"
-- **Files changed**: 19 files
-- **Lines added**: 838
-- **Lines deleted**: 508
+## Repository
+- **GitHub**: https://github.com/muaddib14/kalshi-soccer
+- **Branch**: main
+- **Status**: ✅ Successfully pushed and deployed
 
 ## Next Steps
 1. **Testing**: Add unit tests for individual components
 2. **Performance**: Implement React.memo for expensive components
 3. **Accessibility**: Enhance ARIA attributes for new components
 4. **Documentation**: Add JSDoc comments for component APIs
-
-## Repository
-- **GitHub**: https://github.com/muaddib14/kalshi-soccer
-- **Branch**: main
-- **Status**: ✅ Successfully pushed and deployed
 
 The refactoring successfully transforms a monolithic codebase into a clean, maintainable architecture following SOLID principles and Clean Architecture guidelines.
